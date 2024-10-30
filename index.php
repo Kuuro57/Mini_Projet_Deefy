@@ -20,9 +20,6 @@ require_once 'vendor/autoload.php';
 // ################################
 use \iutnc\deefy\dispatch\Dispatcher;
 use \iutnc\deefy\repository\DeefyRepository;
-use iutnc\deefy\audio\lists\Playlist;
-use iutnc\deefy\audio\tracks\AlbumTrack;
-use iutnc\deefy\audio\tracks\PodcastTrack;
 
 
 
@@ -41,17 +38,3 @@ if (!isset($_GET['action'])) {
 
 $dispatcher = new Dispatcher();
 $dispatcher->run();
-
-
-/*
-$r = DeefyRepository::getInstance();
-
-foreach ($r->findAllPlaylist() as $row) {
-    echo $row . "<br>";
-}
-
-$r->savePlaylist(new Playlist('MyPlaylist', []));
-
-$r->saveAudioTrack(new AlbumTrack('MyAlbumTrackName', 'uwu.mp3', 'MyAlbumTitle', 0));
-$r->saveAudioTrack(new PodcastTrack('MyPodcastTrackName', 'wow.mp3'));
-*/
