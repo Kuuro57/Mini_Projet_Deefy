@@ -4,10 +4,16 @@ namespace iutnc\deefy\action;
 
 abstract class Action {
 
+    // Attributs
     protected ?string $http_method = null;
     protected ?string $hostname = null;
     protected ?string $script_name = null;
-   
+
+
+
+    /**
+     * Constructeur de la classe
+     */
     public function __construct(){
         
         $this->http_method = $_SERVER['REQUEST_METHOD'];

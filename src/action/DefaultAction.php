@@ -6,11 +6,15 @@ use \iutnc\deefy\action\Action;
 
 class DefaultAction extends Action {
 
+
+
+    /**
+     * Méthode qui execute l'action
+     * @return string Un message par défaut
+     */
     public function execute() : string {
 
-        $res = "<b> Bienvenue ! </b>";
-
-        return $res;
+        return "<b> Bienvenue ! </b>";
 
     }
 

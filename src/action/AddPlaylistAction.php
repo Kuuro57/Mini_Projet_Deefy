@@ -12,6 +12,13 @@ Classe qui renvoie un code HTML contenant un formulaire pour donner le nom de la
 
 class AddPlaylistAction extends Action {
 
+
+
+    /**
+     * Méthode qui execute l'action
+     * @return string Un code en format HTML : un formulaire (lorsque méthodde GET utilisée) ou la réponse de
+     *                l'execution (lorsque méthode POST utilisée))
+     */
     public function execute() : string {
 
         // Si il y a déjà une playlist de créée

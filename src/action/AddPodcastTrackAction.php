@@ -3,6 +3,8 @@
 namespace iutnc\deefy\action;
 
 use \iutnc\deefy\action\Action;
+use iutnc\deefy\exception\InvalidPropertyNameException;
+use iutnc\deefy\exception\InvalidPropertyValueException;
 use \iutnc\deefy\render\AudioListRenderer;
 use \iutnc\deefy\audio\tracks\AlbumTrack;
 use \iutnc\deefy\audio\lists\Playlist;
@@ -14,6 +16,13 @@ Classe qui ajoute 1 track dans la playlist
 
 class AddPodcastTrackAction extends Action {
 
+
+
+    /**
+     * Méthode qui execute l'action
+     * @throws InvalidPropertyValueException
+     * @throws InvalidPropertyNameException
+     */
     public function execute() : string {
 
         // Si il n'y a pas de session

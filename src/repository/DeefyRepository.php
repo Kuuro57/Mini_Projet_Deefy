@@ -2,6 +2,9 @@
 
 namespace iutnc\deefy\repository;
 
+use Exception;
+use iutnc\deefy\exception\InvalidPropertyNameException;
+use iutnc\deefy\exception\InvalidPropertyValueException;
 use PDO;
 use iutnc\deefy\audio\lists\Playlist;
 use iutnc\deefy\audio\tracks\PodcastTrack;
@@ -34,11 +37,11 @@ class DeefyRepository {
     }
 
 
-
     /**
      * Méthode setConfig qui prend un nom de fichier qui contient les paramètres de connexion, charge le fichier et stocke
      * le tableau dans une variable static
-     * @param file nom de fichier
+     * @param string $file Nom de fichier
+     * @throws Exception Erreur lors de la lecture du fichier de configuration
      */
     public static function setConfig(string $file) : void {
 
@@ -60,7 +63,7 @@ class DeefyRepository {
 
     /**
      * Méthode getInstance qui retourne une instance de DeefyRepository
-     * @return DeefyRepository une instance de la classe
+     * @return DeefyRepository Une instance de la classe
      */
     public static function getInstance() : DeefyRepository {
         
@@ -96,11 +99,11 @@ class DeefyRepository {
     }
 
 
-
     /**
      * Méthode qui récupère une playlist
-     * @param int L'id de la Playlist
+     * @param int $id L'id de la Playlist
      * @return Playlist Objet de type Playlist
+     * @throws InvalidPropertyValueException
      */
     public function findPlaylist(int $id) : Playlist {
 
@@ -156,7 +159,7 @@ class DeefyRepository {
 
     /**
      * Méthode qui ajoute une playlist dans la BDD
-     * @param Playlist Objet de type Playlist
+     * @param Playlist $p Objet de type Playlist
      * @return Playlist Le nouvel objet Playlist (avec le nouvel id)
      */
     public function savePlaylist(Playlist $p) : Playlist {
@@ -174,11 +177,11 @@ class DeefyRepository {
     }
 
 
-
     /**
      * Méthode qui ajoute une track à la BDD
-     * @param AudioTrack Objet de type AudioTrack
+     * @param AudioTrack $t Objet de type AudioTrack
      * @return AudioTrack Le nouvel objet AudioTrack (avec le nouvel id)
+     * @throws InvalidPropertyNameException
      */
     public function saveAudioTrack(AudioTrack $t) : AudioTrack {
         
@@ -255,11 +258,10 @@ class DeefyRepository {
     }
 
 
-
     /**
      * Méthode qui lie (dans la table playlist2track) une track avec une playlist
-     * @param AudioTrack Objet de type AudioTrack
-     * @param Playlist Objet de type playlist
+     * @param int $id_track Objet de type AudioTrack
+     * @param int $id_playlist Objet de type playlist
      */
     public function addTrackToPlaylist(int $id_track, int $id_playlist) : void {
 

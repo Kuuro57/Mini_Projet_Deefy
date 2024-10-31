@@ -29,7 +29,12 @@ use \iutnc\deefy\repository\DeefyRepository;
 
 
 session_start();
-DeefyRepository::setConfig('conf.db.ini');
+try {
+    DeefyRepository::setConfig('conf.db.ini');
+// Erreur lors de la lecture du fichier de configuration
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
 
 
 if (!isset($_GET['action'])) {

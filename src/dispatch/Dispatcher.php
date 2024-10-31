@@ -30,10 +30,6 @@ class Dispatcher {
                 $class = new AddPodcastTrackAction();
                 break;
 
-            case "display-playlist" :
-                $class = new DisplayPlaylistAction();
-                break;
-
             default :
                 $class = new DisplayPlaylistAction();
                 break;
