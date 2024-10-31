@@ -24,7 +24,7 @@ class DisplayPlaylistAction extends Action {
             $res .= "<b> Playlist en session : </b>";
             $r = DeefyRepository::getInstance();
             $renderer = new AudioListRenderer($r->findPlaylist($pl_id));
-            $res .= $playlistRendered = $renderer->render();
+            $res .= $renderer->render();
         }
 
         return $res;

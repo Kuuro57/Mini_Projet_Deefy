@@ -78,22 +78,28 @@ class DeefyRepository {
      * @return Playlist[] une liste de d'objets Playlist
      */
     public function findAllPlaylist() : array {
-
         $playlists = [];
 
-        $querySQL = 'SELECT * FROM playlist';
-
+        $querySQL = 'SELECT id, nom FROM playlist'; // Inclure les colonnes nécessaires uniquement
         $statement = $this->pdo->prepare($querySQL);
-        $statement->execute();
 
-        foreach ($statement->fetchAll() as $row) {
-            $pl = new Playlist($row['nom'], []);
-            $playlists[] = $pl;
+        // Exécuter la requête et vérifier son succès
+        if ($statement->execute()) {
+            foreach ($statement->fetchAll() as $row) {
+                if (!empty($row['id']) && !empty($row['nom'])) {  // Vérifier que les données sont valides
+                    $pl = new Playlist($row['nom'], []);
+                    $pl->setId((int)$row['id']);  // Associer l'ID à la playlist
+                    $playlists[] = $pl;
+                }
+            }
+        } else {
+            // Gérer une exécution échouée (en option : log ou exception)
+            echo "Erreur lors de l'exécution de la requête pour récupérer les playlists.";
         }
 
         return $playlists;
-
     }
+
 
 
 
@@ -111,7 +117,7 @@ class DeefyRepository {
 
         $row = $statement1->fetch();
         $pl = new Playlist($row['nom'], []);
-        $pl->setId((int)$row['id']);
+        $pl->setId((int)$row['id']); // associe l'id à la playlist récupérée
 
 
 
