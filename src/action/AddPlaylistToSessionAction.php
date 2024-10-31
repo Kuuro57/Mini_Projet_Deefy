@@ -34,12 +34,10 @@ class AddPlaylistToSessionAction extends Action
                 $_SESSION['playlist'] = $this->playlist->__get("id");
                 $res = 'Playlist ajoutée à la session';
                 $res .= $playlist_display->execute();
-                $res .= $add_track->execute();
 
             } else {
                 $res = 'Playlist déjà en session';
                 $res .= $playlist_display->execute();
-                $res .= $add_track->execute();
             }
         }
         // si il n'y a pas de playlist en session
@@ -50,7 +48,6 @@ class AddPlaylistToSessionAction extends Action
 
             $res = 'Playlist ajoutée à la session s';
             $res .= $playlist_display->execute();
-            $res .= $add_track->execute();
         }
         return $res;
     }
