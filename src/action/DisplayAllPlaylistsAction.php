@@ -51,12 +51,13 @@ class DisplayAllPlaylistsAction extends Action {
                 $ids[$i] = $id;
                 $noms[$i] = $nom;
                 // Création du lien avec la syntaxe correcte pour intégrer les variables
-                $liens[$i] = "<a href='?action=add-playlist-to-session&id={$ids[$i]}'>{$noms[$i]}</a><br>";
+                $liens[$i] = "<a href='?action=add-playlist-to-session&id={$ids[$i]}&display-playlist'>{$noms[$i]}</a><br>";
             }
             // Affichage des liens
             foreach ($liens as $lien) {
                 $res .= $lien;
             }
+
         }
 
         return $res;
