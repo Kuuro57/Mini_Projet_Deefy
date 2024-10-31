@@ -24,6 +24,7 @@ class AddPlaylistToSessionAction extends Action
         $this->setPlaylist();
         $res =" ";
         $playlist_display = new DisplayPlaylistAction();
+        $add_track = new AddPodcastTrackAction();
         // Si il y a déjà une playlist de créée
         if (isset($_SESSION['playlist'])) {
             // si la playlist de session est n'est pas la meme que l'attribut playlist
@@ -33,10 +34,12 @@ class AddPlaylistToSessionAction extends Action
                 $_SESSION['playlist'] = $this->playlist->__get("id");
                 $res = 'Playlist ajoutée à la session';
                 $res .= $playlist_display->execute();
+                $res .= $add_track->execute();
 
             } else {
                 $res = 'Playlist déjà en session';
                 $res .= $playlist_display->execute();
+                $res .= $add_track->execute();
             }
         }
         // si il n'y a pas de playlist en session
@@ -47,6 +50,7 @@ class AddPlaylistToSessionAction extends Action
 
             $res = 'Playlist ajoutée à la session s';
             $res .= $playlist_display->execute();
+            $res .= $add_track->execute();
         }
         return $res;
     }

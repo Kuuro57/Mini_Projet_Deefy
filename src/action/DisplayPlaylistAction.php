@@ -25,6 +25,8 @@ class DisplayPlaylistAction extends Action {
             $r = DeefyRepository::getInstance();
             $renderer = new AudioListRenderer($r->findPlaylist($pl_id));
             $res .= $renderer->render();
+            $add_track = new AddPodcastTrackAction();
+            $res .= $add_track->execute();
         }
 
         return $res;
