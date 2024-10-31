@@ -2,6 +2,7 @@
 
 namespace iutnc\deefy\repository;
 
+use iutnc\deefy\render\AudioListRenderer;
 use PDO;
 use iutnc\deefy\audio\lists\Playlist;
 use iutnc\deefy\audio\tracks\PodcastTrack;
@@ -276,6 +277,98 @@ class DeefyRepository {
             'id_pl' => $id_playlist,
             'id_track' => $id_track
         ]);
+
+    }
+
+
+
+    /**
+     * Méthode qui check si l'email donné en paramètre est présent dans la BDD et renvoie son mot de passe hashé
+     * @param string $email Une adresse email
+     * @return array Liste contenant le mot de passe hashé correspondant à l'email et son role
+     */
+    public function checkExistingEmail(string $email) : array {
+
+        // Requête SQL
+        $querySQL = "SELECT passwd, role FROM User WHERE email = ? ";
+        // Préparation de la requête
+        $statement = $this->pdo->prepare($querySQL);
+        $statement->bindParam(1,$email);
+        // Execution de la requête
+        $statement->execute();
+        // On récupère les données sorties par la requête
+        $data = $statement->fetch(PDO::FETCH_ASSOC);
+
+        // Si les données sont vides
+        if (empty($data)) {
+            // Le résultat est une liste vide
+            $res = [];
+        }
+        // Sinon
+        else {
+            // Le résultat est une liste contenant le mot de passe hashé correspondant à l'email et son role
+            $res = [
+                'passwd' => $data['passwd'],
+                'role' => $data['role']
+            ];
+        }
+        // On retourne le résultat
+        return $res;
+
+    }
+
+
+
+    /**
+     * Méthode qui ajoute un nouvel utilisateur à la BDD
+     * @param string $email Une adresse email
+     * @param string $hashpasswd Un mot de passe hashé
+     * @param int $role Un identifiant de rôle
+     */
+    public function addUser(string $email, string $hashpasswd, int $role) : void {
+
+        // Requête SQL
+        $querySQL = "INSERT INTO User (email, passwd, role) VALUES (?, ?, ?)";
+        // Préparation de la requête
+        $statement = $this->pdo->prepare($querySQL);
+        $statement->bindParam(1,$email);
+        $statement->bindParam(2,$hashpasswd);
+        $statement->bindParam(3,$role);
+        // Execution de la requête
+        $data = $statement->execute();
+
+    }
+
+
+
+    /**
+     * Méthode qui récupère les playlists d'un utilisateur
+     * @param string $email L'email de l'utilisateur
+     * @param string $password Le mot de passe de l'utilisateur
+     * @param int $role Le role de l'utilisateur
+     * @return string Message en format HTML qui liste les playlists de l'utilisateur
+     */
+    public function getPlaylistsUser(string $email, string $password, int $role) : string {
+
+        // Requête SQL
+        $querySQL = "SELECT Playlist.id AS idPlaylist FROM Playlist
+                     INNER JOIN User2Playlist ON User2Playlist.id_pl = Playlist.id
+                     INNER JOIN User On User.id = User2Playlist.id_pl
+                     WHERE User.email = ?";
+        // Préparation de la requête
+        $statement = $this->pdo->prepare($querySQL);
+        $statement->bindParam(1, $email);
+        // Execution de la requête
+        $statement->execute();
+
+        $res = '';
+        while ($data = $statement->fetchAll(PDO::FETCH_ASSOC)) {
+            $playlist = $this->findPlaylist($data['idPlaylist']);
+            $render = new AudioListRenderer($playlist);
+            $res .= $render->render();
+        }
+
+        return $res;
 
     }
 

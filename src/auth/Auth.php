@@ -1,67 +1,66 @@
 <?php
 
 namespace iutnc\deefy\auth;
+
 use iutnc\deefy\exception\AuthException as AuthException;
+use iutnc\deefy\repository\DeefyRepository;
 use PDO;
+
+
+/**
+ * Classe Auth qui contient les méthode qui permettent l'authentification
+ */
 class Auth{
 
+
+    /**
+     * Méthode qui permet d'authentifier un utilisateur
+     * @param string $e Une adresse email
+     * @param string $p Un mot de passe
+     * @return bool True si l'authentification s'est bien déroulée
+     * @throws AuthException
+     */
     public static function authenticate(string $e, string $p):bool{
-        $bd = \iutnc\deefy\db\ConnectionFactory::makeConnection();
-        $query = "select passwd, role from User where email = ? ";
-        $prep = $bd->prepare($query);
-        $prep->bindParam(1,$e);
-        $bool = $prep->execute();
-        $data =$prep->fetch(PDO::FETCH_ASSOC);
-        $hash=$data['passwd'];
-        if (!password_verify($p, $hash)&&$bool)throw new AuthException("Mot de passe Incorrect");
+
+        $bd = DeefyRepository::getInstance();
+        $res = $bd->checkExistingEmail($e);
+
+        if ($res === []) {
+            return false;
+        }
+
+        if (!password_verify($p, $res['passwd'])) throw new AuthException("Mot de passe Incorrect");
+
         $_SESSION['user']['id']=$e;
-        $_SESSION['user']['role']=$data['role'];;
+        $_SESSION['user']['role']=$res['role'];;
         return true;
+
     }
 
-    
+
+
+    /**
+     * Méthode qui enregistre un utilisateur dans la BDD
+     * @param string $e Une adresse email
+     * @param string $p Un mot de passe
+     * @return String Message qui indique si l'inscription s'est bien déroulée ou non
+     */
     public static function register(string $e, string $p):String{
-        $res = "Echec inscription";
-        $minimumLength = 10;
 
-        //verification compte
-        $bd = \iutnc\deefy\db\ConnectionFactory::makeConnection();
-        $query = "select passwd from User where email = ? ";
-        $prep = $bd->prepare($query);
-        $prep->bindParam(1,$e);
-        $prep->execute();
-        $d = $prep->fetchall(PDO::FETCH_ASSOC);
-        if((strlen($p) >= $minimumLength)&&(sizeof($d)==0)){
-            //hash the password
-            $hash = password_hash($p, PASSWORD_DEFAULT,['cost'=>10]);
-            
-            //prepare the insert
-            $insert = "INSERT into user (email, passwd) values(?,?)";
-            $prep = $bd->prepare($insert);
-            $prep->bindParam(1,$e);
-            $prep->bindParam(2,$hash);
-            $bool = $prep->execute();
-            if($bool){
-                $res = "inscription Reussite";
-            }
+        // On vérifie que l'utilisateur n'existe pas déjà dans la BDD
+        $bd = DeefyRepository::getInstance();
+        $list = $bd->checkExistingEmail($e);
+
+        if (!($list === [])) {
+            return "L'email {$e} existe déjà !";
         }
-        return $res;
-    }
-    public static function checkAccess(int $id):bool{
-        $res=false;
-        
-        $bd = \iutnc\deefy\db\ConnectionFactory::makeConnection();
-        $query = "SELECT u.email as email from user u inner join user2playlist p on u.id = p.id_user where id_pl = ? ";
-        $prep = $bd->prepare($query);
-        $prep->bindParam(1,$id);
-        $bool = $prep->execute();
-        $d = $prep->fetchall(PDO::FETCH_ASSOC);
-        if($bool && sizeof($d)>0){
-            if($d[0]['email'] === $_SESSION['user']['id']||$_SESSION['user']['role']===100){
-                $res=true;
-            }
-        }
-        return $res;
+        // On hash son mot de passe
+        $hashpassw = password_hash($p, PASSWORD_DEFAULT);
+        // On ajoute l'email et le mot de passe à la BDD avec le role 1 (rôle standard)
+        $bd->addUser($e, $hashpassw, 1);
+        // On retourne un message qui indique que l'inscription s'est bien déroulée
+        return '<b>Compte créé !</b>';
+
     }
 
 }

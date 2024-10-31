@@ -1,5 +1,6 @@
 <?php
 namespace iutnc\deefy\action;
+use iutnc\deefy\repository\DeefyRepository;
 use PDO;
 use iutnc\deefy\render\AudioListRenderer as AudioListRenderer;
 class SigninAction extends Action {
@@ -37,8 +38,8 @@ class SigninAction extends Action {
                     <h3>Playlists de l'utilisateur : </h3>
                 start;
 
-
-                $bd = \iutnc\deefy\db\ConnectionFactory::makeConnection();
+                /*
+                $bd = DeefyRepository::getInstance();
                 //boucle qui affiche les playlists de l'utilisateur
                 //un peu de la force brute mais on stock pas l'id de la playliste donc on doit aller le chercher pour chaque palylsit
                 foreach ($t as $k => $value) {
@@ -52,6 +53,7 @@ class SigninAction extends Action {
                         $res.= '<a href="?action=display-playlist&id='.$play['id'].'"> - '.$nom.'</a>';                    
                     }                    
                 }
+                */
             }
         }
         return $res;

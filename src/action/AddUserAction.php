@@ -1,5 +1,7 @@
 <?php
+
 namespace iutnc\deefy\action;
+
 class AddUserAction extends Action {
     
     public function __construct(){
