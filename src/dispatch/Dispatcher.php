@@ -3,19 +3,19 @@
 namespace iutnc\deefy\dispatch;
 
 use iutnc\deefy\action\AddPlaylistToSessionAction;
+use iutnc\deefy\action\AddUserAction;
 use \iutnc\deefy\action\DefaultAction;
 use iutnc\deefy\action\DisplayAllPlaylistsAction;
 use \iutnc\deefy\action\DisplayPlaylistAction;
 use \iutnc\deefy\action\AddPlaylistAction;
 use \iutnc\deefy\action\AddPodcastTrackAction;
-use iutnc\deefy\exception\InvalidPropertyNameException;
+use iutnc\deefy\action\SigninAction;
 
 
 class Dispatcher {
 
     /**
      * Méthode qui lance le dispatcher
-     * @throws InvalidPropertyNameException
      */
     public function run() : void {
 
@@ -24,6 +24,15 @@ class Dispatcher {
 
             case "default" :
                 $class = new DefaultAction();
+                break;
+
+
+            case 'add-user':
+                $class = (new AddUserAction());
+                break;
+
+            case 'sign-in':
+                $class = (new SigninAction());
                 break;
 
             case "add-playlist" :
@@ -37,13 +46,17 @@ class Dispatcher {
             case "display-playlist" :
                 $class = new DisplayPlaylistAction();
                 break;
-
             case "display-all-playlists" :
                 $class = new DisplayAllPlaylistsAction();
                 break;
-
             case "add-playlist-to-session" :
                 $class = new AddPlaylistToSessionAction();
+                break;
+
+
+
+            default :
+                $class = new DisplayPlaylistAction();
                 break;
 
         }
@@ -68,11 +81,18 @@ class Dispatcher {
 
                 <div>
                     <form method="get">
+                    
+                     <ul>
+                        <li><a href="?action=add-user" class ="boutton">register</a></li>
+                        <li><a href="?action=sign-in" class ="boutton">signin</a></li> 
+                        </ul>
                         <button name='action' value='default'> Méthode par défaut </button>
                         <button name='action' value='display-playlist'> Afficher la playlist </button>
-                        <button name='action' value='add-playlist'> Nouvelle playlist </button>
+                        <button name='action' value='add-playlist'> Ajouter une playlist à la session </button>
                         <button name='action' value='add-track'> Ajouter une track à la playlist </button>
                         <button name='action' value='display-all-playlists'> Mes playlists </button>
+                       
+                        
                     </form>
                 </div>
 
