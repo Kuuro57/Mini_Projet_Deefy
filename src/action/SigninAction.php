@@ -55,6 +55,9 @@ class SigninAction extends Action {
                 }
                 */
             }
+            else {
+                return 'Email inexistant !';
+            }
         }
         return $res;
     }
