@@ -1,6 +1,8 @@
 <?php
 namespace iutnc\deefy\action;
 
+use iutnc\deefy\auth\Auth;
+use iutnc\deefy\exception\AuthException;
 use iutnc\deefy\user\User;
 use iutnc\deefy\render\AudioListRenderer as AudioListRenderer;
 
@@ -48,8 +50,8 @@ class SigninAction extends Action {
 
             // On vérifie que l'utilisateur à bien rempli les champs
             try{
-                $bool = \iutnc\deefy\auth\Auth::authenticate($e, $p);
-            }catch(\iutnc\deefy\exception\AuthException $e){
+                $bool = Auth::authenticate($e, $p);
+            }catch(AuthException $e){
                 $res = "<p>Identifiant ou mot de passe invalide</p>";
             }
 
@@ -85,10 +87,6 @@ class SigninAction extends Action {
                     $t
                 END;
 
-            }
-            // Sinon
-            else {
-                return 'Email inexistant !';
             }
 
         }
