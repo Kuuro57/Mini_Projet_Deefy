@@ -16,6 +16,11 @@ class DisplayPlaylistAction extends Action {
 
         $res = "<b> Affichage de la Playlist : </b>\n<br>";
 
+        if (isset($_GET['id'])) {
+            $_SESSION['playlist'] = $_GET['id'];
+            $_GET['id'] = null;
+        }
+
         if (!isset($_SESSION['user'])) {
             return '<b> Veuillez vous connecter pour utiliser toutes les fonctionnalités ! </b>';
         }
@@ -24,11 +29,6 @@ class DisplayPlaylistAction extends Action {
         }
 
         else {
-
-            if (isset($_GET['id'])) {
-                $_SESSION['playlist'] = $_GET['id'];
-                $_GET['id'] = null;
-            }
 
             $pl_id = $_SESSION['playlist'];
             $res .= "<b> Playlist en session : </b>";

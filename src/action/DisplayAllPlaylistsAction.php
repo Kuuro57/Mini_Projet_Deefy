@@ -30,10 +30,19 @@ class DisplayAllPlaylistsAction extends Action {
         }
 
         $e = $_SESSION['user']['email'];
+        $role = (int) $_SESSION['user']['role'];
 
-        // On recupère les playlists de l'utilisateur
         $u = new User($e);
-        $playlists = $u->getPlaylists();
+
+        // Si l'utilisateur a un rôle standard
+        if ($role === 1) {
+            // On recupère les playlists de l'utilisateur
+            $playlists = $u->getPlaylists();
+        }
+        // Si l'utilisateur à un rôle admin
+        else if ($role === 100) {
+            $playlists = $u->getPlaylistsADMIN();
+        }
 
         // Si l'utilisateur n'a pas de playlist
         if ($playlists === []) {

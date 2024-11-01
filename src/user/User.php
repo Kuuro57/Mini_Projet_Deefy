@@ -36,4 +36,16 @@ class User{
 
     }
 
+
+
+    /**
+     * Méthode qui récupère toutes les playlists de la BDD
+     * @return void
+     */
+    public function getPlaylistsADMIN() : array {
+
+        $bd = DeefyRepository::getInstance();
+        return $bd->findAllPlaylist();
+    }
+
 }

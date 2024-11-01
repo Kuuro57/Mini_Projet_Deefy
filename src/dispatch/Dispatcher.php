@@ -78,6 +78,10 @@ class Dispatcher {
             $compte = 'Connecté au compte : ' . $_SESSION['user']['email'];
             // On affiche le bouton de déconnexion
             $btn_deco = "<button name='action' value='sign-out' class ='boutton'> signout </button>";
+            // On affiche pas le bouton de connexion
+            $btn_co = "";
+            // On affiche pas le bouton de création de compte
+            $btn_crea_compte = "";
         }
         // Sinon
         else {
@@ -85,6 +89,10 @@ class Dispatcher {
             $compte = 'Connectez-vous / Inscrivez-vous pour profiter du site !';
             // On n'affiche pas le bouton de déconnexion
             $btn_deco = "";
+            // On affiche le bouton de connexion
+            $btn_co = "<button name='action' value='sign-in' class='boutton'> signin </button>";
+            // On affiche le bouton de création de compte
+            $btn_crea_compte = "<button name='action' value='add-user' class ='boutton'> register </button>";
         }
 
         if (isset($_SESSION['playlist'])) {
@@ -104,9 +112,9 @@ class Dispatcher {
             <html lang="fr">
             
                 <form method="get">
-                    <button name='action' value="add-user" class ="boutton"> register </button>
+                    $btn_crea_compte
                     <tr>
-                    <button name='action' value="sign-in" class ="boutton"> signin </button>
+                    $btn_co
                     <tr>
                     $btn_deco
                 </form>
