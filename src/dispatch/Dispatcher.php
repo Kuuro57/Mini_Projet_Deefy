@@ -11,6 +11,8 @@ use \iutnc\deefy\action\AddPlaylistAction;
 use \iutnc\deefy\action\AddPodcastTrackAction;
 use iutnc\deefy\action\SigninAction;
 use iutnc\deefy\action\SignOutAction;
+use iutnc\deefy\exception\InvalidPropertyNameException;
+use iutnc\deefy\repository\DeefyRepository;
 
 
 class Dispatcher {
@@ -64,9 +66,9 @@ class Dispatcher {
     }
 
 
-
     /**
      * Méthode qui ajoute le morceau de page à la page complète
+     * @throws InvalidPropertyNameException
      */
     private function renderPage(string $html) : void {
 
@@ -85,6 +87,10 @@ class Dispatcher {
             $btn_deco = "";
         }
 
+        $bd = DeefyRepository::getInstance();
+        $pl = $bd->findPlaylist($_SESSION['playlist'])->getNom();
+        $playlist = 'Playlist en session : ' . $pl;
+
 
 
         // On affiche la page
@@ -101,6 +107,8 @@ class Dispatcher {
                 </form>
                 
                 $compte
+                <br>
+                $playlist
             
                 <center><h1> Deefy Music ! </h1></center>
             
