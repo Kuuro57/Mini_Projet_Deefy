@@ -3,6 +3,7 @@ namespace iutnc\deefy\action;
 
 use iutnc\deefy\auth\Auth;
 use iutnc\deefy\exception\AuthException;
+use iutnc\deefy\exception\InvalidPropertyValueException;
 use iutnc\deefy\user\User;
 use iutnc\deefy\render\AudioListRenderer as AudioListRenderer;
 
@@ -26,6 +27,7 @@ class SigninAction extends Action {
      * @return string Un message au format HTML contenant un formulaire (lorsque méthode GET utilisée)
      *                Un message indiquant que la connexion s'est bien déroulée et la liste des playlists
      *                de l'utilisateur (lorsque méthode POST utilisée)
+     * @throws InvalidPropertyValueException
      */
     public function execute() : string{
 
@@ -59,7 +61,7 @@ class SigninAction extends Action {
             if($bool){
 
                 // On recupère les playlists de l'utilisateur
-                $u = new User($e);
+                $u = new User($e, (int) $_SESSION['user']['role']);
                 $list_playlists =  $u->getPlaylists();
 
                 // Si l'utilisateur n'a pas de playlists

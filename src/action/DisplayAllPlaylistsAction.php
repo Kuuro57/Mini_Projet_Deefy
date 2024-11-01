@@ -3,6 +3,7 @@
 namespace iutnc\deefy\action;
 
 use iutnc\deefy\exception\InvalidPropertyNameException;
+use iutnc\deefy\exception\InvalidPropertyValueException;
 use iutnc\deefy\user\User;
 
 
@@ -16,6 +17,7 @@ class DisplayAllPlaylistsAction extends Action {
      * Méthode qui execute l'action
      * @return string
      * @throws InvalidPropertyNameException
+     * @throws InvalidPropertyValueException
      */
     public function execute() : string {
 
@@ -29,21 +31,8 @@ class DisplayAllPlaylistsAction extends Action {
         $role = (int) $_SESSION['user']['role'];
 
         // On créé un utilisateur
-        $u = new User($e);
-
-        // Si l'utilisateur a un rôle standard
-        if ($role === 1) {
-            // On recupère les playlists de l'utilisateur
-            $playlists = $u->getPlaylists();
-        }
-        // Si l'utilisateur à un rôle admin
-        else if ($role === 100) {
-            $playlists = $u->getPlaylistsADMIN();
-        }
-        // Si le role n'est pas correct
-        else {
-            return 'Impossible d\'identifier votre role';
-        }
+        $u = new User($e, $role);
+        $playlists = $u->getPlaylists();
 
         // Si l'utilisateur n'a pas de playlist
         if ($playlists === []) {
