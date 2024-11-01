@@ -2,6 +2,9 @@
 
 namespace iutnc\deefy\repository;
 
+use Exception;
+use iutnc\deefy\exception\InvalidPropertyNameException;
+use iutnc\deefy\exception\InvalidPropertyValueException;
 use PDO;
 use iutnc\deefy\audio\lists\Playlist;
 use iutnc\deefy\audio\tracks\PodcastTrack;
@@ -41,8 +44,6 @@ class DeefyRepository {
     /**
      * Méthode setConfig qui prend un nom de fichier qui contient les paramètres de connexion, charge le fichier et stocke
      * le tableau dans une variable static
-     * @param string $file nom de fichier
-     * @throws Exception
      * @param string $file Nom de fichier
      * @throws Exception Erreur lors de la lecture du fichier de configuration
      */

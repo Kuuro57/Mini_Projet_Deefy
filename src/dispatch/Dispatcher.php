@@ -2,11 +2,17 @@
 
 namespace iutnc\deefy\dispatch;
 
+use iutnc\deefy\action\AddUserAction;
 use \iutnc\deefy\action\DefaultAction;
+use iutnc\deefy\action\DisplayAllPlaylistsAction;
 use \iutnc\deefy\action\DisplayPlaylistAction;
 use \iutnc\deefy\action\AddPlaylistAction;
 use \iutnc\deefy\action\AddPodcastTrackAction;
-
+use iutnc\deefy\action\SigninAction;
+use iutnc\deefy\action\SignOutAction;
+use iutnc\deefy\exception\InvalidPropertyNameException;
+use iutnc\deefy\exception\InvalidPropertyValueException;
+use iutnc\deefy\repository\DeefyRepository;
 
 
 /**
@@ -16,6 +22,7 @@ class Dispatcher {
 
     /**
      * Méthode qui lance le dispatcher
+     * @throws InvalidPropertyNameException | InvalidPropertyValueException
      */
     public function run() : void {
 
@@ -65,7 +72,7 @@ class Dispatcher {
 
     /**
      * Méthode qui ajoute le morceau de page à la page complète
-     * @throws InvalidPropertyNameException
+     * @throws InvalidPropertyNameException | InvalidPropertyValueException
      */
     private function renderPage(string $html) : void {
 

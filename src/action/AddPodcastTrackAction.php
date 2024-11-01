@@ -5,6 +5,7 @@ namespace iutnc\deefy\action;
 
 use \iutnc\deefy\audio\tracks\AlbumTrack;
 use iutnc\deefy\exception\InvalidPropertyNameException;
+use iutnc\deefy\exception\InvalidPropertyValueException;
 use \iutnc\deefy\repository\DeefyRepository;
 
 
@@ -17,7 +18,7 @@ class AddPodcastTrackAction extends Action {
     /**
      * Méthode qui execute l'action
      * @return string
-     * @throws InvalidPropertyNameException
+     * @throws InvalidPropertyNameException | InvalidPropertyValueException
      */
     public function execute() : string {
 
