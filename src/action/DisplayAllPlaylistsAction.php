@@ -35,6 +35,12 @@ class DisplayAllPlaylistsAction extends Action {
         $u = new User($e);
         $playlists = $u->getPlaylists();
 
+        // Si l'utilisateur n'a pas de playlist
+        if ($playlists === []) {
+            // On renvoie un message disant qu'il n'y a pas de playlist
+            return 'Vous n\'avez aucune playlist !';
+        }
+
         for ($i = 0; $i < count($playlists); $i++) {
             $pl = $playlists[$i];
 

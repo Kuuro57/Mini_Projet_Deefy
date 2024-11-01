@@ -2,6 +2,7 @@
 namespace iutnc\deefy\action;
 
 use iutnc\deefy\repository\DeefyRepository;
+use iutnc\deefy\user\User;
 use PDO;
 use iutnc\deefy\render\AudioListRenderer as AudioListRenderer;
 
@@ -54,8 +55,11 @@ class SigninAction extends Action {
             if($bool){
 
                 // On recupère les playlists de l'utilisateur
-                $u = new \iutnc\deefy\user\User($e, $p,1);
+                $u = new User($e);
                 $list_playlists =  $u->getPlaylists();
+
+                // On met la première playlist en session
+                $_SESSION['playlist'] = $list_playlists[0]->getId();
 
                 foreach($list_playlists as $playlist){
                     $render = new AudioListRenderer($playlist);
