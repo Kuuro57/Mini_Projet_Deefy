@@ -58,6 +58,12 @@ class SigninAction extends Action {
                 $u = new User($e);
                 $list_playlists =  $u->getPlaylists();
 
+                // Si l'utilisateur n'a pas de playlists
+                if ($list_playlists === []) {
+                    return 'Vous n\'avez aucune playlist !';
+                }
+                    // On renvoie un message
+
                 // On met la première playlist en session
                 $_SESSION['playlist'] = $list_playlists[0]->getId();
 
