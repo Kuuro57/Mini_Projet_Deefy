@@ -61,6 +61,7 @@ class SigninAction extends Action {
                 // On met la première playlist en session
                 $_SESSION['playlist'] = $list_playlists[0]->getId();
 
+                $t = '';
                 foreach($list_playlists as $playlist){
                     $render = new AudioListRenderer($playlist);
                     $t .= $render->render();

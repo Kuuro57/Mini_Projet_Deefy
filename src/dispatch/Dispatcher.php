@@ -87,9 +87,14 @@ class Dispatcher {
             $btn_deco = "";
         }
 
-        $bd = DeefyRepository::getInstance();
-        $pl = $bd->findPlaylist($_SESSION['playlist'])->getNom();
-        $playlist = 'Playlist en session : ' . $pl;
+        if (isset($_SESSION['playlist'])) {
+            $bd = DeefyRepository::getInstance();
+            $pl = $bd->findPlaylist($_SESSION['playlist'])->getNom();
+            $playlist = 'Playlist en session : ' . $pl;
+        }
+        else {
+            $playlist = '';
+        }
 
 
 
