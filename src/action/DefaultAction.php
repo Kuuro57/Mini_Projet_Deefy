@@ -2,15 +2,16 @@
 
 namespace iutnc\deefy\action;
 
-use \iutnc\deefy\action\Action;
 
+
+/**
+ * Classe qui représente l'action par défaut
+ */
 class DefaultAction extends Action {
-
-
 
     /**
      * Méthode qui execute l'action
-     * @return string Un message par défaut
+     * @return string
      */
     public function execute() : string {
 

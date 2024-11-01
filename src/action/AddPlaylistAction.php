@@ -2,75 +2,74 @@
 
 namespace iutnc\deefy\action;
 
-use \iutnc\deefy\action\Action;
 use \iutnc\deefy\audio\lists\Playlist;
+use iutnc\deefy\exception\InvalidPropertyNameException;
 use \iutnc\deefy\repository\DeefyRepository;
 
-/*
-Classe qui renvoie un code HTML contenant un formulaire pour donner le nom de la playlist que l'on veut créé
-*/
 
+
+/**
+ * Classe qui renvoie un code HTML contenant un formulaire pour donner le nom de la playlist que l'on veut créé
+ */
 class AddPlaylistAction extends Action {
-
 
 
     /**
      * Méthode qui execute l'action
      * @return string Un code en format HTML : un formulaire (lorsque méthodde GET utilisée) ou la réponse de
      *                l'execution (lorsque méthode POST utilisée))
+     * @throws InvalidPropertyNameException
      */
     public function execute() : string {
 
-        // Si il y a déjà une playlist de créée
-        if (!isset($_SESSION['playlist'])) {
-            
-            // Si la méthode HTTP est de type GET (= que l'on veut créer une playlist)
-            if ($this->http_method === 'GET') {
+        // Si l'utilisateur n'est pas connecté
+        if (!isset($_SESSION['user'])) {
+            return '<b> Veuillez vous connecter pour utiliser toutes les fonctionnalités ! </b>';
+        }
 
-                // On retourne un code HTML avec le formulaire
-                return '
-                <form method="post" name="nom" action="?action=add-playlist">
-                    <label> Nom de la playlist : 
-                        <input type="text" name="nom" placeholder="<nom>">
-                    </label>
+        // Si la méthode HTTP est de type GET (= que l'on veut créer une playlist)
+        if ($this->http_method === 'GET') {
 
-                    <button type="submit" name="valider"> Valider </button>
-                </form>
-                ';
+            // On retourne un code HTML avec le formulaire
+            return '
+            <form method="post" name="nom" action="?action=add-playlist">
+                <label> Nom de la playlist : 
+                    <input type="text" name="nom" placeholder="<nom>">
+                </label>
 
-            }
-            // Si la méthode HTTP est de type POST (= que l'on a répondu au formulaire)
-            else if ($this->http_method === 'POST') {
+                <button type="submit" name="valider"> Valider </button>
+            </form>
+            ';
 
-                // Récupération de l'instance unique pour l'accès à la BDD
-                $r = DeefyRepository::getInstance();
+        }
+        // Si la méthode HTTP est de type POST (= que l'on a répondu au formulaire)
+        else if ($this->http_method === 'POST') {
 
-                // On récupère le nom de la playlist en filtrant les données présentes dans le POST
-                $nomPlaylist = filter_var($_POST['nom'], FILTER_SANITIZE_SPECIAL_CHARS);
-                // On créé la playlist avec le nom récupéré et une liste vide
-                $playlist = new Playlist($nomPlaylist, []);
-                // On ajoute la playlist dans la BDD
-                $playlist = $r->savePlaylist($playlist);
-                // On met dans la session "playlist" l'id de la playlist
-                $_SESSION['playlist'] = $playlist->__get("id");
-                // On informe que la playlist a bien été créée
-                $res = 'Création et mise en session de l\'id de la playlist <b> réussie </b>';
-                // On affiche un lien qui permet de directement ajouter une musique à la playlist
-                $res .= '<a href="?action=add-track"> Ajouter une piste </a>';
-                // On retourne tout ce que l'on veut afficher
-                return $res;
+            // Récupération de l'instance unique pour l'accès à la BDD
+            $r = DeefyRepository::getInstance();
 
-            }
-            // Sinon
-            else {
-                // On indique une erreur
-                return 'Erreur : Méthode inconnue';
-            }
+            // On récupère le nom de la playlist en filtrant les données présentes dans le POST
+            $nomPlaylist = filter_var($_POST['nom'], FILTER_SANITIZE_SPECIAL_CHARS);
+            // On créé la playlist avec le nom récupéré et une liste vide
+            $playlist = new Playlist($nomPlaylist, []);
+            // On ajoute la playlist dans la BDD
+            $playlist = $r->savePlaylist($playlist);
+            // On ajoute la playlist dans la table User2Playlist
+            $r->addPlaylistToUser($_SESSION['user']['email'], $playlist->getId());
+            // On met dans la session "playlist" l'id de la playlist
+            $_SESSION['playlist'] = $playlist->__get("id");
+            // On informe que la playlist a bien été créée
+            $res = 'Création et mise en session de l\'id de la playlist <b> réussie </b>';
+            // On affiche un lien qui permet de directement ajouter une musique à la playlist
+            $res .= '<a href="?action=add-track"> Ajouter une piste </a>';
+            // On retourne tout ce que l'on veut afficher
+            return $res;
+
         }
         // Sinon
         else {
-            // On informe qu'une playlist existe déjà
-            return "<b> Playlist déjà existante ! </b>";
+            // On indique une erreur
+            return 'Erreur : Méthode inconnue';
         }
 
     }

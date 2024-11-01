@@ -2,31 +2,31 @@
 
 namespace iutnc\deefy\action;
 
-use \iutnc\deefy\action\Action;
-use iutnc\deefy\exception\InvalidPropertyNameException;
-use iutnc\deefy\exception\InvalidPropertyValueException;
-use \iutnc\deefy\render\AudioListRenderer;
+
 use \iutnc\deefy\audio\tracks\AlbumTrack;
-use \iutnc\deefy\audio\lists\Playlist;
+use iutnc\deefy\exception\InvalidPropertyNameException;
 use \iutnc\deefy\repository\DeefyRepository;
 
-/*
-Classe qui ajoute 1 track dans la playlist
-*/
 
+
+/**
+ * Classe qui ajoute 1 track dans la playlist
+ */
 class AddPodcastTrackAction extends Action {
-
-
 
     /**
      * Méthode qui execute l'action
-     * @throws InvalidPropertyValueException
+     * @return string
      * @throws InvalidPropertyNameException
      */
     public function execute() : string {
 
+        // Si l'utilisateur n'est pas connecté
+        if (!isset($_SESSION['user'])) {
+            return '<b> Veuillez vous connecter pour utiliser toutes les fonctionnalités ! </b>';
+        }
         // Si il n'y a pas de session
-        if (!isset($_SESSION['playlist'])) {
+        else if (!isset($_SESSION['playlist'])) {
             return '<b> Pas de playlist en session ! </b>';
         }
         // Sinon
@@ -88,6 +88,7 @@ class AddPodcastTrackAction extends Action {
             }
         }
     }
+
 
 
     /**

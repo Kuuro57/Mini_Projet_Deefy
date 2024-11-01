@@ -2,23 +2,23 @@
 
 namespace iutnc\deefy\repository;
 
-use Exception;
-use iutnc\deefy\exception\InvalidPropertyNameException;
-use iutnc\deefy\exception\InvalidPropertyValueException;
 use PDO;
 use iutnc\deefy\audio\lists\Playlist;
 use iutnc\deefy\audio\tracks\PodcastTrack;
 use iutnc\deefy\audio\tracks\AlbumTrack;
 use iutnc\deefy\audio\tracks\AudioTrack;
 
+
+
+/**
+ * Classe qui représente l'accès à la BDD
+ */
 class DeefyRepository {
 
-
-
     // Attributs
-    private PDO $pdo;
-    private static ?array $config = [];
-    private static ?DeefyRepository $instance = null;
+    private PDO $pdo; // Objet permettant d'accéder à la BDD et d'executer les requêtes SQL
+    private static ?array $config = []; // Liste qui contient les configurations pour accéder à la BDD
+    private static ?DeefyRepository $instance = null; // Instance unique de la classe DeefyRepository
 
 
 
@@ -37,9 +37,12 @@ class DeefyRepository {
     }
 
 
+
     /**
      * Méthode setConfig qui prend un nom de fichier qui contient les paramètres de connexion, charge le fichier et stocke
      * le tableau dans une variable static
+     * @param string $file nom de fichier
+     * @throws Exception
      * @param string $file Nom de fichier
      * @throws Exception Erreur lors de la lecture du fichier de configuration
      */
@@ -84,19 +87,26 @@ class DeefyRepository {
 
         $playlists = [];
 
-        $querySQL = 'SELECT * FROM playlist';
-
+        $querySQL = 'SELECT id, nom FROM playlist'; // Inclure les colonnes nécessaires uniquement
         $statement = $this->pdo->prepare($querySQL);
-        $statement->execute();
 
-        foreach ($statement->fetchAll() as $row) {
-            $pl = new Playlist($row['nom'], []);
-            $playlists[] = $pl;
+        // Exécuter la requête et vérifier son succès
+        if ($statement->execute()) {
+            foreach ($statement->fetchAll() as $row) {
+                if (!empty($row['id']) && !empty($row['nom'])) {  // Vérifier que les données sont valides
+                    $pl = new Playlist($row['nom'], []);
+                    $pl->setId((int)$row['id']);  // Associer l'ID à la playlist
+                    $playlists[] = $pl;
+                }
+            }
+        } else {
+            // Gérer une exécution échouée (en option : log ou exception)
+            echo "Erreur lors de l'exécution de la requête pour récupérer les playlists.";
         }
 
         return $playlists;
-
     }
+
 
 
     /**
@@ -114,7 +124,7 @@ class DeefyRepository {
 
         $row = $statement1->fetch();
         $pl = new Playlist($row['nom'], []);
-        $pl->setId((int)$row['id']);
+        $pl->setId((int)$row['id']); // associe l'id à la playlist récupérée
 
 
 
@@ -148,11 +158,7 @@ class DeefyRepository {
 
         }
 
-
-
-
         return $pl;
-
     }
 
 
@@ -161,6 +167,7 @@ class DeefyRepository {
      * Méthode qui ajoute une playlist dans la BDD
      * @param Playlist $p Objet de type Playlist
      * @return Playlist Le nouvel objet Playlist (avec le nouvel id)
+     * @throws InvalidPropertyNameException
      */
     public function savePlaylist(Playlist $p) : Playlist {
 
@@ -175,6 +182,7 @@ class DeefyRepository {
         return $p;
 
     }
+
 
 
     /**
@@ -258,6 +266,7 @@ class DeefyRepository {
     }
 
 
+
     /**
      * Méthode qui lie (dans la table playlist2track) une track avec une playlist
      * @param int $id_track Objet de type AudioTrack
@@ -272,6 +281,134 @@ class DeefyRepository {
             'id_pl' => $id_playlist,
             'id_track' => $id_track
         ]);
+
+    }
+
+
+
+    /**
+     * Méthode qui check si l'email donné en paramètre est présent dans la BDD et renvoie son mot de passe hashé
+     * @param string $email Une adresse email
+     * @return array Liste contenant le mot de passe hashé correspondant à l'email et son role
+     */
+    public function checkExistingEmail(string $email) : array {
+
+        // Requête SQL
+        $querySQL = "SELECT passwd, role FROM User WHERE email = ? ";
+        // Préparation de la requête
+        $statement = $this->pdo->prepare($querySQL);
+        $statement->bindParam(1,$email);
+        // Execution de la requête
+        $statement->execute();
+        // On récupère les données sorties par la requête
+        $data = $statement->fetch(PDO::FETCH_ASSOC);
+
+        // Si les données sont vides
+        if (empty($data)) {
+            // Le résultat est une liste vide
+            $res = [];
+        }
+        // Sinon
+        else {
+            // Le résultat est une liste contenant le mot de passe hashé correspondant à l'email et son role
+            $res = [
+                'passwd' => $data['passwd'],
+                'role' => $data['role']
+            ];
+        }
+        // On retourne le résultat
+        return $res;
+
+    }
+
+
+
+    /**
+     * Méthode qui ajoute un nouvel utilisateur à la BDD
+     * @param string $email Une adresse email
+     * @param string $hashpasswd Un mot de passe hashé
+     * @param int $role Un identifiant de rôle
+     */
+    public function addUser(string $email, string $hashpasswd, int $role) : void {
+
+        // Requête SQL
+        $querySQL = "INSERT INTO User (email, passwd, role) VALUES (?, ?, ?)";
+        // Préparation de la requête
+        $statement = $this->pdo->prepare($querySQL);
+        $statement->bindParam(1,$email);
+        $statement->bindParam(2,$hashpasswd);
+        $statement->bindParam(3,$role);
+        // Execution de la requête
+        $data = $statement->execute();
+
+    }
+
+
+
+    /**
+     * Méthode qui récupère les playlists d'un utilisateur
+     * @param string $email L'email de l'utilisateur
+     * @return array La liste des playlists de l'utilisateur
+     * @throws InvalidPropertyValueException
+     */
+    public function getPlaylistsUser(string $email) : array {
+
+        // Requête SQL qui récupère l'id des playlists appartenant à l'utilisateur
+        $querySQL = "SELECT Playlist.id AS idPlaylist FROM Playlist
+                     INNER JOIN User2Playlist ON User2Playlist.id_pl = Playlist.id
+                     INNER JOIN User On User.id = User2Playlist.id_user
+                     WHERE User.email = ?";
+        // Préparation de la requête
+        $statement = $this->pdo->prepare($querySQL);
+        $statement->bindParam(1, $email);
+        // Execution de la requête
+        $statement->execute();
+
+        $res = [];
+        foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $data) {
+            $playlist = $this->findPlaylist((int) $data['idPlaylist']);
+            $res[] = $playlist;
+        }
+
+        return $res;
+
+    }
+
+
+
+    /**
+     * Méthode qui lie une playlist à un utilisateur
+     * @param string $email L'email de l'utilisateur
+     * @param int $id_playlist L'id de la playlist à ajouter
+     */
+    public function addPlaylistToUser(string $email, int $id_playlist) : void {
+
+        // Requête SQL qui récupère l'id associé à l'email
+        $querySQL = "SELECT User.id as id FROM User WHERE email = ?";
+
+        // Préparation de la requête
+        $statement = $this->pdo->prepare($querySQL);
+        $statement->bindParam(1,$email);
+
+        // Execution de la requête
+        $statement->execute();
+
+        // On récupère l'id
+        $id_email = $statement->fetch()['id'];
+
+
+
+
+        // Requête SQL qui ajoute l'id d'une playlist à l'id d'un utilisateur
+        $querySQL2 = "INSERT INTO User2Playlist (id_user, id_pl) VALUES (?, ?)";
+
+        // Préparation de la requête
+        $statement2 = $this->pdo->prepare($querySQL2);
+        $statement2->bindParam(1,$id_email);
+        $statement2->bindParam(2,$id_playlist);
+
+        // Execution de la requête
+        $statement2->execute();
 
     }
 

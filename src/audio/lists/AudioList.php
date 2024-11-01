@@ -2,12 +2,19 @@
 
 namespace iutnc\deefy\audio\lists;
 
+use iutnc\deefy\exception\InvalidPropertyNameException;
+
 require_once('src/exception/InvalidPropertyNameException.php');
 
 class AudioList {
 
     // Attributs
     protected ?int $id;
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
     protected string $nom;
     protected int $nbPistes;
     protected int $dureeTotale;
@@ -37,6 +44,16 @@ class AudioList {
         }
         throw new InvalidPropertyNameException("Invalid property name : $attr");
     }
+
+    public function getNom(): string
+    {
+        if ($this->nom === null) {
+            throw new InvalidPropertyNameException("Invalid property name : nom");
+        }
+        return $this->nom;
+
+    }
+
 
 
 
