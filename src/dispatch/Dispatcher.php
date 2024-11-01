@@ -2,7 +2,6 @@
 
 namespace iutnc\deefy\dispatch;
 
-use iutnc\deefy\action\AddPlaylistToSessionAction;
 use iutnc\deefy\action\AddUserAction;
 use \iutnc\deefy\action\DefaultAction;
 use iutnc\deefy\action\DisplayAllPlaylistsAction;
@@ -15,6 +14,10 @@ use iutnc\deefy\exception\InvalidPropertyNameException;
 use iutnc\deefy\repository\DeefyRepository;
 
 
+
+/**
+ * Classe qui représente le dispatcher
+ */
 class Dispatcher {
 
     /**
@@ -28,7 +31,6 @@ class Dispatcher {
             case "default" :
                 $class = new DefaultAction();
                 break;
-
 
             case 'add-user':
                 $class = (new AddUserAction());
@@ -66,6 +68,7 @@ class Dispatcher {
     }
 
 
+
     /**
      * Méthode qui ajoute le morceau de page à la page complète
      * @throws InvalidPropertyNameException
@@ -95,18 +98,21 @@ class Dispatcher {
             $btn_crea_compte = "<button name='action' value='add-user' class ='boutton'> register </button>";
         }
 
+        // Si il y a une playlist en session
         if (isset($_SESSION['playlist'])) {
+            // On affiche le nom de la playlist en session
             $bd = DeefyRepository::getInstance();
             $pl = $bd->findPlaylist($_SESSION['playlist'])->getNom();
             $playlist = 'Playlist en session : ' . $pl;
         }
+        // Sinon
         else {
+            // On n'affiche rien
             $playlist = '';
         }
 
 
-
-        // On affiche la page
+        // On affiche la page HTML complète
         echo <<<END
 
             <html lang="fr">

@@ -1,9 +1,7 @@
 <?php
 namespace iutnc\deefy\action;
 
-use iutnc\deefy\repository\DeefyRepository;
 use iutnc\deefy\user\User;
-use PDO;
 use iutnc\deefy\render\AudioListRenderer as AudioListRenderer;
 
 
@@ -29,9 +27,10 @@ class SigninAction extends Action {
      */
     public function execute() : string{
 
-        $res="";
-        if($this->http_method == "GET") {
+        // Si la méthode utilisée est de type GET
+        if ($this->http_method == "GET") {
 
+            // On affiche le formulaire
             $res='<form method="post" action="?action=sign-in">
                 <input type="email" name="email" placeholder="email" autofocus>
                 <input type="password" name="password" placeholder="mot de passe">
@@ -39,8 +38,10 @@ class SigninAction extends Action {
                 </form>';
 
         }
-        else{
+        // Sinon
+        else {
 
+            // On récupère l'email et le mot de passe
             $e = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
             $p = $_POST['password'];
             $bool = false;
@@ -52,6 +53,7 @@ class SigninAction extends Action {
                 $res = "<p>Identifiant ou mot de passe invalide</p>";
             }
 
+            // Si l'authentification à réussie
             if($bool){
 
                 // On recupère les playlists de l'utilisateur
@@ -60,19 +62,21 @@ class SigninAction extends Action {
 
                 // Si l'utilisateur n'a pas de playlists
                 if ($list_playlists === []) {
+                    // On renvoie un message
                     return 'Vous n\'avez aucune playlist !';
                 }
-                    // On renvoie un message
 
                 // On met la première playlist en session
                 $_SESSION['playlist'] = $list_playlists[0]->getId();
 
+                // On boucle sur les playlist et on récupère leur rendu HTML
                 $t = '';
                 foreach($list_playlists as $playlist){
                     $render = new AudioListRenderer($playlist);
                     $t .= $render->render();
                 }
 
+                // On affiche les playlists de l'utilisateur
                 $res= <<<END
                     <h3>Connexion réussie pour $e</h3>
                     <h3>Playlists de l'utilisateur : </h3>
@@ -82,12 +86,14 @@ class SigninAction extends Action {
                 END;
 
             }
+            // Sinon
             else {
                 return 'Email inexistant !';
             }
 
         }
 
+        // On retourne le résultat
         return $res;
     }
 }

@@ -2,19 +2,13 @@
 
 namespace iutnc\deefy\action;
 
-use \iutnc\deefy\action\Action;
-use iutnc\deefy\audio\lists\Playlist;
 use iutnc\deefy\exception\InvalidPropertyNameException;
-use \iutnc\deefy\render\AudioListRenderer;
-use \iutnc\deefy\repository\DeefyRepository;
 use iutnc\deefy\user\User;
 
-/*
-Classe qui affiche une playlist en session
-*/
+
 
 /**
- *
+ * Classe qui affiche toutes les playlists d'un utilisateur
  */
 class DisplayAllPlaylistsAction extends Action {
 
@@ -25,13 +19,16 @@ class DisplayAllPlaylistsAction extends Action {
      */
     public function execute() : string {
 
+        // Si l'utilisateur n'est pas connecté
         if (!isset($_SESSION['user'])) {
             return '<b> Veuillez vous connecter pour utiliser toutes les fonctionnalités ! </b>';
         }
 
+        // On récupère l'email et le role
         $e = $_SESSION['user']['email'];
         $role = (int) $_SESSION['user']['role'];
 
+        // On créé un utilisateur
         $u = new User($e);
 
         // Si l'utilisateur a un rôle standard
@@ -43,6 +40,10 @@ class DisplayAllPlaylistsAction extends Action {
         else if ($role === 100) {
             $playlists = $u->getPlaylistsADMIN();
         }
+        // Si le role n'est pas correct
+        else {
+            return 'Impossible d\'identifier votre role';
+        }
 
         // Si l'utilisateur n'a pas de playlist
         if ($playlists === []) {
@@ -50,6 +51,7 @@ class DisplayAllPlaylistsAction extends Action {
             return 'Vous n\'avez aucune playlist !';
         }
 
+        // On boucle sur les playlists
         for ($i = 0; $i < count($playlists); $i++) {
             $pl = $playlists[$i];
 
@@ -69,6 +71,7 @@ class DisplayAllPlaylistsAction extends Action {
             $res .= $lien;
         }
 
+        // On retourne les playlists sous forme de formulaire
         return $res . '</form>';
     }
 

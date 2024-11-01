@@ -2,10 +2,6 @@
 
 namespace iutnc\deefy\action;
 
-use iutnc\deefy\repository\DeefyRepository;
-use PDO;
-use iutnc\deefy\render\AudioListRenderer as AudioListRenderer;
-
 
 
 /**
@@ -21,6 +17,7 @@ class SignOutAction extends Action {
     }
 
 
+
     /**
      * Méthode qui execute l'action
      * @return string Message indiquant que la déconnexion s'est bien déroulé
@@ -29,6 +26,7 @@ class SignOutAction extends Action {
 
         // On enlève de la session l'email et le rôle
         $_SESSION['user'] = null;
+        $_SESSION['role'] = null;
 
         // On enlève la playlist en session
         $_SESSION['playlist'] = null;

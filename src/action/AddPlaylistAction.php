@@ -2,16 +2,15 @@
 
 namespace iutnc\deefy\action;
 
-use \iutnc\deefy\action\Action;
 use \iutnc\deefy\audio\lists\Playlist;
 use iutnc\deefy\exception\InvalidPropertyNameException;
 use \iutnc\deefy\repository\DeefyRepository;
 
 
 
-/*
-Classe qui renvoie un code HTML contenant un formulaire pour donner le nom de la playlist que l'on veut créé
-*/
+/**
+ * Classe qui renvoie un code HTML contenant un formulaire pour donner le nom de la playlist que l'on veut créé
+ */
 class AddPlaylistAction extends Action {
 
     /**
@@ -21,6 +20,7 @@ class AddPlaylistAction extends Action {
      */
     public function execute() : string {
 
+        // Si l'utilisateur n'est pas connecté
         if (!isset($_SESSION['user'])) {
             return '<b> Veuillez vous connecter pour utiliser toutes les fonctionnalités ! </b>';
         }

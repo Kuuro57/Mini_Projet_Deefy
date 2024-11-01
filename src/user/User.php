@@ -2,11 +2,13 @@
 
 namespace iutnc\deefy\user;
 
+use iutnc\deefy\exception\InvalidPropertyValueException;
 use iutnc\deefy\repository\DeefyRepository;
 
 
+
 /**
- * Classe
+ * Classe qui permet d'afficher d'afficher les playlists en fonction du role (standard ou admin)
  */
 class User{
 
@@ -28,6 +30,7 @@ class User{
     /**
      * Méthode qui récupère la liste des playlists de l'utilisateur
      * @return array La liste des playlists de l'utilisateur
+     * @throws InvalidPropertyValueException
      */
     public function getPlaylists(): array {
 

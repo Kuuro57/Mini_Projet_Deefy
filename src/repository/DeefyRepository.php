@@ -2,21 +2,26 @@
 
 namespace iutnc\deefy\repository;
 
-use iutnc\deefy\render\AudioListRenderer;
+use Exception;
+use iutnc\deefy\exception\InvalidPropertyNameException;
+use iutnc\deefy\exception\InvalidPropertyValueException;
 use PDO;
 use iutnc\deefy\audio\lists\Playlist;
 use iutnc\deefy\audio\tracks\PodcastTrack;
 use iutnc\deefy\audio\tracks\AlbumTrack;
 use iutnc\deefy\audio\tracks\AudioTrack;
 
+
+
+/**
+ * Classe qui représente l'accès à la BDD
+ */
 class DeefyRepository {
 
-
-
     // Attributs
-    private PDO $pdo;
-    private static ?array $config = [];
-    private static ?DeefyRepository $instance = null;
+    private PDO $pdo; // Objet permettant d'accéder à la BDD et d'executer les requêtes SQL
+    private static ?array $config = []; // Liste qui contient les configurations pour accéder à la BDD
+    private static ?DeefyRepository $instance = null; // Instance unique de la classe DeefyRepository
 
 
 
@@ -39,7 +44,8 @@ class DeefyRepository {
     /**
      * Méthode setConfig qui prend un nom de fichier qui contient les paramètres de connexion, charge le fichier et stocke
      * le tableau dans une variable static
-     * @param file nom de fichier
+     * @param string $file nom de fichier
+     * @throws Exception
      */
     public static function setConfig(string $file) : void {
 
@@ -103,11 +109,11 @@ class DeefyRepository {
 
 
 
-
     /**
      * Méthode qui récupère une playlist
-     * @param int L'id de la Playlist
+     * @param int $id L'id de la Playlist
      * @return Playlist Objet de type Playlist
+     * @throws InvalidPropertyValueException
      */
     public function findPlaylist(int $id) : Playlist {
 
@@ -152,19 +158,16 @@ class DeefyRepository {
 
         }
 
-
-
-
         return $pl;
-
     }
 
 
 
     /**
      * Méthode qui ajoute une playlist dans la BDD
-     * @param Playlist Objet de type Playlist
+     * @param Playlist $p Objet de type Playlist
      * @return Playlist Le nouvel objet Playlist (avec le nouvel id)
+     * @throws InvalidPropertyNameException
      */
     public function savePlaylist(Playlist $p) : Playlist {
 
@@ -184,8 +187,9 @@ class DeefyRepository {
 
     /**
      * Méthode qui ajoute une track à la BDD
-     * @param AudioTrack Objet de type AudioTrack
+     * @param AudioTrack $t Objet de type AudioTrack
      * @return AudioTrack Le nouvel objet AudioTrack (avec le nouvel id)
+     * @throws InvalidPropertyNameException
      */
     public function saveAudioTrack(AudioTrack $t) : AudioTrack {
         
@@ -265,8 +269,8 @@ class DeefyRepository {
 
     /**
      * Méthode qui lie (dans la table playlist2track) une track avec une playlist
-     * @param AudioTrack Objet de type AudioTrack
-     * @param Playlist Objet de type playlist
+     * @param int $id_track Objet de type AudioTrack
+     * @param int $id_playlist Objet de type playlist
      */
     public function addTrackToPlaylist(int $id_track, int $id_playlist) : void {
 
@@ -345,6 +349,7 @@ class DeefyRepository {
      * Méthode qui récupère les playlists d'un utilisateur
      * @param string $email L'email de l'utilisateur
      * @return array La liste des playlists de l'utilisateur
+     * @throws InvalidPropertyValueException
      */
     public function getPlaylistsUser(string $email) : array {
 
@@ -368,6 +373,7 @@ class DeefyRepository {
         return $res;
 
     }
+
 
 
     /**
