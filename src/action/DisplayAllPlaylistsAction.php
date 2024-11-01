@@ -4,8 +4,10 @@ namespace iutnc\deefy\action;
 
 use \iutnc\deefy\action\Action;
 use iutnc\deefy\audio\lists\Playlist;
+use iutnc\deefy\exception\InvalidPropertyNameException;
 use \iutnc\deefy\render\AudioListRenderer;
 use \iutnc\deefy\repository\DeefyRepository;
+use iutnc\deefy\user\User;
 
 /*
 Classe qui affiche une playlist en session
@@ -17,50 +19,42 @@ Classe qui affiche une playlist en session
 class DisplayAllPlaylistsAction extends Action {
 
     /**
+     * Méthode qui execute l'action
      * @return string
+     * @throws InvalidPropertyNameException
      */
     public function execute() : string {
 
-        // récupération de la liste des playlists
-        $r = DeefyRepository::getInstance();
-        $playlists = $r->findAllPlaylist();
-
-        if ($playlists === null) {
-            // Retourner un message d'erreur si la récupération échoue
-            return '<b>Erreur lors de la récupération des playlists !</b>';
+        if (!isset($_SESSION['user'])) {
+            return '<b> Veuillez vous connecter pour utiliser toutes les fonctionnalités ! </b>';
         }
 
-        $res = "<b> Affichage des Playlists : </b>\n<br>";
+        $e = $_SESSION['user']['email'];
 
-        if (empty($playlists)) {
-            return '<b> Pas de playlist en base de données ! </b>';
-        } else {
-            $res .= "<b> Playlists en base de données : </b>";
+        // On recupère les playlists de l'utilisateur
+        $u = new User($e);
+        $playlists = $u->getPlaylists();
 
-            $ids = []; // Initialisation du tableau des ids
-            $noms = []; // Initialisation du tableau des noms
-            $liens = []; // Initialisation du tableau des liens
+        for ($i = 0; $i < count($playlists); $i++) {
+            $pl = $playlists[$i];
 
-            for ($i = 0; $i < count($playlists); $i++) {
-                $pl = $playlists[$i];
-
-                // Récupération des informations de la playlist
-                $id = $pl->getId();       // ID de la playlist
-                $nom = $pl->__get("nom");      // Nom de la playlist
-                // Remplissage des tableaux
-                $ids[$i] = $id;
-                $noms[$i] = $nom;
-                // Création du lien avec la syntaxe correcte pour intégrer les variables
-                $liens[$i] = "<a href='?action=add-playlist-to-session&id={$ids[$i]}&display-playlist'>{$noms[$i]}</a><br>";
-            }
-            // Affichage des liens
-            foreach ($liens as $lien) {
-                $res .= $lien;
-            }
-
+            // Récupération des informations de la playlist
+            $id = $pl->getId();       // ID de la playlist
+            $nom = $pl->__get("nom");      // Nom de la playlist
+            // Remplissage des tableaux
+            $ids[$i] = $id;
+            $noms[$i] = $nom;
+            // Création du lien avec la syntaxe correcte pour intégrer les variables
+            $liens[$i] = "<a href='?action=display-playlist&id={$ids[$i]}'>{$noms[$i]}</a><br>";
+        }
+        // Affichage des liens
+        $res = '<form method="get">';
+        // Affichage des liens
+        foreach ($liens as $lien) {
+            $res .= $lien;
         }
 
-        return $res;
+        return $res . '</form>';
     }
 
 

@@ -16,8 +16,11 @@ class AddPodcastTrackAction extends Action {
 
     public function execute() : string {
 
+        if (!isset($_SESSION['user'])) {
+            return '<b> Veuillez vous connecter pour utiliser toutes les fonctionnalités ! </b>';
+        }
         // Si il n'y a pas de session
-        if (!isset($_SESSION['playlist'])) {
+        else if (!isset($_SESSION['playlist'])) {
             return '<b> Pas de playlist en session ! </b>';
         }
         // Sinon

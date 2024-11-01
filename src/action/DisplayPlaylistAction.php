@@ -16,10 +16,20 @@ class DisplayPlaylistAction extends Action {
 
         $res = "<b> Affichage de la Playlist : </b>\n<br>";
 
-        if (!isset($_SESSION['playlist'])) {
+        if (!isset($_SESSION['user'])) {
+            return '<b> Veuillez vous connecter pour utiliser toutes les fonctionnalités ! </b>';
+        }
+        else if (!isset($_SESSION['playlist'])) {
             return '<b> Pas de playlist en session ! </b>';
         }
+
         else {
+
+            if (isset($_GET['id'])) {
+                $_SESSION['playlist'] = $_GET['id'];
+                $_GET['id'] = null;
+            }
+
             $pl_id = $_SESSION['playlist'];
             $res .= "<b> Playlist en session : </b>";
             $r = DeefyRepository::getInstance();
@@ -27,6 +37,7 @@ class DisplayPlaylistAction extends Action {
             $res .= $renderer->render();
             $add_track = new AddPodcastTrackAction();
             $res .= $add_track->execute();
+
         }
 
         return $res;

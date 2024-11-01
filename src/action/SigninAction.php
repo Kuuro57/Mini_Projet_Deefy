@@ -1,27 +1,50 @@
 <?php
 namespace iutnc\deefy\action;
+
 use iutnc\deefy\repository\DeefyRepository;
 use PDO;
 use iutnc\deefy\render\AudioListRenderer as AudioListRenderer;
+
+
+
+/**
+ * Classe qui représente l'action de connexion à un compte
+ */
 class SigninAction extends Action {
-    
+
+    /**
+     * Constructeur de la classe
+     */
     public function __construct(){
         parent::__construct();
     }
 
+
+    /**
+     * Méthode qui execute l'action
+     * @return string Un message au format HTML contenant un formulaire (lorsque méthode GET utilisée)
+     *                Un message indiquant que la connexion s'est bien déroulée et la liste des playlists
+     *                de l'utilisateur (lorsque méthode POST utilisée)
+     */
     public function execute() : string{
+
         $res="";
-        if($this->http_method == "GET"){
+        if($this->http_method == "GET") {
+
             $res='<form method="post" action="?action=sign-in">
                 <input type="email" name="email" placeholder="email" autofocus>
                 <input type="text" name="password" placeholder="mot de passe">
                 <input type="submit" name="connex" value="Connexion">
                 </form>';
-        }else{
+
+        }
+        else{
+
             $e = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
-            $p =$_POST['password'];
+            $p = $_POST['password'];
             $bool = false;
-            //on vérifie que l'utilisateur à bien rempli les champs 
+
+            // On vérifie que l'utilisateur à bien rempli les champs
             try{
                 $bool = \iutnc\deefy\auth\Auth::authenticate($e, $p);
             }catch(\iutnc\deefy\exception\AuthException $e){
@@ -30,35 +53,30 @@ class SigninAction extends Action {
 
             if($bool){
 
-                //on recupère les playlists de l'utilisateur
+                // On recupère les playlists de l'utilisateur
                 $u = new \iutnc\deefy\user\User($e, $p,1);
-                $t =  $u->getPlaylists();
-                $res=<<<start
+                $list_playlists =  $u->getPlaylists();
+
+                foreach($list_playlists as $playlist){
+                    $render = new AudioListRenderer($playlist);
+                    $t .= $render->render();
+                }
+
+                $res= <<<END
                     <h3>Connexion réussie pour $e</h3>
                     <h3>Playlists de l'utilisateur : </h3>
-                start;
+                    <br>
+                    <br>
+                    $t
+                END;
 
-                /*
-                $bd = DeefyRepository::getInstance();
-                //boucle qui affiche les playlists de l'utilisateur
-                //un peu de la force brute mais on stock pas l'id de la playliste donc on doit aller le chercher pour chaque palylsit
-                foreach ($t as $k => $value) {
-                    $nom = $value->__get("nom");
-                    $query ="SELECT id from playlist p where p.nom like ?";
-                    $playlists = $bd->prepare($query);
-                    $playlists -> bindParam(1, $nom);
-                    $playlists -> execute();
-            
-                    while($play=$playlists->fetch(PDO::FETCH_ASSOC)){
-                        $res.= '<a href="?action=display-playlist&id='.$play['id'].'"> - '.$nom.'</a>';                    
-                    }                    
-                }
-                */
             }
             else {
                 return 'Email inexistant !';
             }
+
         }
+
         return $res;
     }
 }

@@ -344,16 +344,14 @@ class DeefyRepository {
     /**
      * Méthode qui récupère les playlists d'un utilisateur
      * @param string $email L'email de l'utilisateur
-     * @param string $password Le mot de passe de l'utilisateur
-     * @param int $role Le role de l'utilisateur
-     * @return string Message en format HTML qui liste les playlists de l'utilisateur
+     * @return array La liste des playlists de l'utilisateur
      */
-    public function getPlaylistsUser(string $email, string $password, int $role) : string {
+    public function getPlaylistsUser(string $email) : array {
 
-        // Requête SQL
+        // Requête SQL qui récupère l'id des playlists appartenant à l'utilisateur
         $querySQL = "SELECT Playlist.id AS idPlaylist FROM Playlist
                      INNER JOIN User2Playlist ON User2Playlist.id_pl = Playlist.id
-                     INNER JOIN User On User.id = User2Playlist.id_pl
+                     INNER JOIN User On User.id = User2Playlist.id_user
                      WHERE User.email = ?";
         // Préparation de la requête
         $statement = $this->pdo->prepare($querySQL);
@@ -361,14 +359,50 @@ class DeefyRepository {
         // Execution de la requête
         $statement->execute();
 
-        $res = '';
-        while ($data = $statement->fetchAll(PDO::FETCH_ASSOC)) {
-            $playlist = $this->findPlaylist($data['idPlaylist']);
-            $render = new AudioListRenderer($playlist);
-            $res .= $render->render();
+        $res = [];
+        foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $data) {
+            $playlist = $this->findPlaylist((int) $data['idPlaylist']);
+            $res[] = $playlist;
         }
 
         return $res;
+
+    }
+
+
+    /**
+     * Méthode qui lie une playlist à un utilisateur
+     * @param string $email L'email de l'utilisateur
+     * @param int $id_playlist L'id de la playlist à ajouter
+     */
+    public function addPlaylistToUser(string $email, int $id_playlist) : void {
+
+        // Requête SQL qui récupère l'id associé à l'email
+        $querySQL = "SELECT User.id as id FROM User WHERE email = ?";
+
+        // Préparation de la requête
+        $statement = $this->pdo->prepare($querySQL);
+        $statement->bindParam(1,$email);
+
+        // Execution de la requête
+        $statement->execute();
+
+        // On récupère l'id
+        $id_email = $statement->fetch()['id'];
+
+
+
+
+        // Requête SQL qui ajoute l'id d'une playlist à l'id d'un utilisateur
+        $querySQL2 = "INSERT INTO User2Playlist (id_user, id_pl) VALUES (?, ?)";
+
+        // Préparation de la requête
+        $statement2 = $this->pdo->prepare($querySQL2);
+        $statement2->bindParam(1,$id_email);
+        $statement2->bindParam(2,$id_playlist);
+
+        // Execution de la requête
+        $statement2->execute();
 
     }
 

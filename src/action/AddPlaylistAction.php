@@ -7,19 +7,23 @@ use \iutnc\deefy\audio\lists\Playlist;
 use iutnc\deefy\exception\InvalidPropertyNameException;
 use \iutnc\deefy\repository\DeefyRepository;
 
+
+
 /*
 Classe qui renvoie un code HTML contenant un formulaire pour donner le nom de la playlist que l'on veut créé
 */
-
 class AddPlaylistAction extends Action {
-
-
 
     /**
      * Méthode qui execute l'action
      * @throws InvalidPropertyNameException
+     * @return string
      */
     public function execute() : string {
+
+        if (!isset($_SESSION['user'])) {
+            return '<b> Veuillez vous connecter pour utiliser toutes les fonctionnalités ! </b>';
+        }
 
         // Si la méthode HTTP est de type GET (= que l'on veut créer une playlist)
         if ($this->http_method === 'GET') {
@@ -48,6 +52,8 @@ class AddPlaylistAction extends Action {
             $playlist = new Playlist($nomPlaylist, []);
             // On ajoute la playlist dans la BDD
             $playlist = $r->savePlaylist($playlist);
+            // On ajoute la playlist dans la table User2Playlist
+            $r->addPlaylistToUser($_SESSION['user']['email'], $playlist->getId());
             // On met dans la session "playlist" l'id de la playlist
             $_SESSION['playlist'] = $playlist->__get("id");
             // On informe que la playlist a bien été créée

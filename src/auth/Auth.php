@@ -31,7 +31,7 @@ class Auth{
 
         if (!password_verify($p, $res['passwd'])) throw new AuthException("Mot de passe Incorrect");
 
-        $_SESSION['user']['id']=$e;
+        $_SESSION['user']['email']=$e;
         $_SESSION['user']['role']=$res['role'];;
         return true;
 

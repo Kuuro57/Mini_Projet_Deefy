@@ -52,10 +52,6 @@ class Dispatcher {
                 $class = new DisplayAllPlaylistsAction();
                 break;
 
-            case "add-playlist-to-session" :
-                $class = new AddPlaylistToSessionAction();
-                break;
-
             default :
                 $class = new DisplayPlaylistAction();
                 break;
@@ -77,7 +73,7 @@ class Dispatcher {
         // Si l'utilisateur est connecté
         if (isset($_SESSION['user'])) {
             // On affiche l'email du compte auquel il est connecté
-            $compte = 'Connecté au compte : ' . $_SESSION['user']['id'];
+            $compte = 'Connecté au compte : ' . $_SESSION['user']['email'];
             // On affiche le bouton de déconnexion
             $btn_deco = "<button name='action' value='sign-out' class ='boutton'> signout </button>";
         }
@@ -111,9 +107,8 @@ class Dispatcher {
             
                 <center><form method="get">
                 
-                    <button name='action' value='default'> Méthode par défaut </button>
                     <button name='action' value='display-playlist'> Afficher la playlist </button>
-                    <button name='action' value='add-playlist'> Ajouter une playlist à la session </button>
+                    <button name='action' value='add-playlist'> Ajouter une playlist </button>
                     <button name='action' value='add-track'> Ajouter une track à la playlist </button>
                     <button name='action' value='display-all-playlists'> Mes playlists </button>
                     
