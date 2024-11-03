@@ -19,6 +19,16 @@ class AddUserAction extends Action {
     }
 
 
+    public function checkPasswordStrength(string $pass, int $minimumLength): bool {
+        $length = (strlen($pass) >= $minimumLength); // taille minimum
+        $digit = preg_match("#[\d]#", $pass);        // Au moins un chiffre
+        $special = preg_match("#[\W]#", $pass);      // Au moins un caractère spécial
+        $lower = preg_match("#[a-z]#", $pass);       // Au moins une lettre minuscule
+        $upper = preg_match("#[A-Z]#", $pass);       // Au moins une lettre majuscule
+
+        // Return true only if all conditions are met
+        return $length && $digit && $special && $lower && $upper;
+    }
 
     /**
      * Méthode qui execute l'action
@@ -43,10 +53,17 @@ class AddUserAction extends Action {
             // On récupère les mots de passe
             $p1= $_POST['passwd1'];
             $p2 = $_POST['passwd2'];
+            $p1 = filter_var($p1, FILTER_SANITIZE_SPECIAL_CHARS);
+            $p2 = filter_var($p2, FILTER_SANITIZE_SPECIAL_CHARS);
+
             // Si les deux mots de passe sont identiques
             if ($p1 === $p2) {
+
+                if($this->checkPasswordStrength($p1, 8) == false){
+                    return "<p>Mot de passe trop faible</p>";
+                } else {
                 // On enregistre le nouveau compte / utilisateur dans la BDD
-                $res = "<p>" . Auth::register($e, $p1) . "</p>";
+                $res = "<p>" . Auth::register($e, $p1) . "</p>";}
             }
             // Sinon
             else {
