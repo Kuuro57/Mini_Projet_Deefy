@@ -26,7 +26,7 @@ courante.
 • s’authentifier : fournir ses credentials pour s’authentifier en tant qu’utilisateur enregistré.
 
 • L’affichage d’une playlist et l’ajout d’une piste à une playlist est réservé au propriétaire de la
-playlist ou au rôle ADMIN (Le compte admin est déjà créer en BDD, email:admin@mail.com mdp:admin)
+playlist ou au rôle ADMIN (Le compte admin est déjà créé en BDD, email:admin@mail.com mdp:admin)
 • Sécurité : stockage adéquat des mot de passe,
 parades contre l’injection XSS et SQL,
 • le code HTML généré valide,
