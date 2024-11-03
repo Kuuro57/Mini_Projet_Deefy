@@ -79,24 +79,23 @@ class DeefyRepository {
     }
 
 
-
     /**
      * Méthode qui récupère sous forme d'une liste toutes les playlists
      * @return Playlist[] une liste de d'objets Playlist
+     * @throws InvalidPropertyValueException
      */
     public function findAllPlaylist() : array {
 
         $playlists = [];
 
-        $querySQL = 'SELECT id, nom FROM playlist'; // Inclure les colonnes nécessaires uniquement
+        $querySQL = 'SELECT id FROM playlist'; // Inclure les colonnes nécessaires uniquement
         $statement = $this->pdo->prepare($querySQL);
 
         // Exécuter la requête et vérifier son succès
         if ($statement->execute()) {
             foreach ($statement->fetchAll() as $row) {
-                if (!empty($row['id']) && !empty($row['nom'])) {  // Vérifier que les données sont valides
-                    $pl = new Playlist($row['nom'], []);
-                    $pl->setId((int)$row['id']);  // Associer l'ID à la playlist
+                if (!empty($row['id'])) {  // Vérifier que les données sont valides
+                    $pl = $this->findPlaylist((int) $row['id']);
                     $playlists[] = $pl;
                 }
             }

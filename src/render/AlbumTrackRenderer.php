@@ -27,8 +27,8 @@ class AlbumTrackRenderer implements Renderer {
                 return "
                     <div id='track'>
                     
-                        <p><strong>{$this->track->titre}</strong> <br>
-                        <strong>Artiste</strong> - {$this->track->artiste}</p> <br>
+                        <p><strong>{$this->track->titre}</strong></p> <br>
+                        <strong>Artiste</strong> - {$this->track->artiste} <br>
                         <audio src='audio/{$this->track->nomFichierAudio}' controls></audio><br>
                         <p>
                             <strong>Album</strong> - {$this->track->album} <br>

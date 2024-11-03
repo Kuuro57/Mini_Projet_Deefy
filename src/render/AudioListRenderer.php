@@ -19,7 +19,7 @@ class AudioListRenderer implements Renderer {
 
 
     public function render(int $selector = Renderer::COMPACT) : string {
-        $aff = "<html>\n\n\t<strong>{$this->audioList->nom}</strong> <br>";
+        $aff = "----------<br><h3><strong>{$this->audioList->nom}</strong></h3>";
         foreach ($this->audioList->listAudioTrack as $index => $val) {
             if (get_class($val) === 'iutnc\deefy\audio\tracks\AlbumTrack') {
                 $albumTrackRenderer = new AlbumTrackRenderer($val);
@@ -30,6 +30,6 @@ class AudioListRenderer implements Renderer {
                 $aff = $aff . $podcastTrackRenderer->render(1) . " <br>";
             }
         }
-        return $aff . "\n\n</html>";
+        return $aff . "----------<br><br>";
     }
 }
