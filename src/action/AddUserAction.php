@@ -20,13 +20,13 @@ class AddUserAction extends Action {
 
 
     public function checkPasswordStrength(string $pass, int $minimumLength): bool {
-        $length = (strlen($pass) >= $minimumLength); // taille minimum
+        $length = (strlen($pass) >= $minimumLength);        // Taille minimum
         $digit = preg_match("#[\d]#", $pass);        // Au moins un chiffre
         $special = preg_match("#[\W]#", $pass);      // Au moins un caractère spécial
         $lower = preg_match("#[a-z]#", $pass);       // Au moins une lettre minuscule
         $upper = preg_match("#[A-Z]#", $pass);       // Au moins une lettre majuscule
 
-        // Return true only if all conditions are met
+        // Retourne vrai si toutes les conditions sont réunies
         return $length && $digit && $special && $lower && $upper;
     }
 
@@ -59,7 +59,7 @@ class AddUserAction extends Action {
             // Si les deux mots de passe sont identiques
             if ($p1 === $p2) {
 
-                if($this->checkPasswordStrength($p1, 8) == false){
+                if(!$this->checkPasswordStrength($p1, 8)){
                     return "<p>Mot de passe trop faible</p>";
                 } else {
                 // On enregistre le nouveau compte / utilisateur dans la BDD
