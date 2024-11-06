@@ -11,6 +11,14 @@ use iutnc\deefy\auth\Auth;
  */
 class AddUserAction extends Action {
 
+    // Attribut
+    private string $formulaire = '<form method="post" action="?action=add-user">
+                                        <input type="email" name="email" placeholder="Email" class="input-field" required autofocus>
+                                        <input type="password" name="passwd1" placeholder="Mot de passe" class="input-field" required>
+                                        <input type="password" name="passwd2" placeholder="Confirmez le mot de passe" class="input-field" required>
+                                        <input type="submit" name="connex" value="Connexion" class="button">
+                                  </form>';
+
     /**
      * Constructeur de la classe
      */
@@ -19,6 +27,13 @@ class AddUserAction extends Action {
     }
 
 
+
+    /**
+     * Méthode qui teste la difficultée d'un mot de passe
+     * @param string $pass le mote de passe à tester
+     * @param int $minimumLength la taille minimum que le mot de passe doit avoir
+     * @return bool Vrai si le mot de passe est bon, faux sinon
+     */
     public function checkPasswordStrength(string $pass, int $minimumLength): bool {
         $length = (strlen($pass) >= $minimumLength);        // Taille minimum
         $digit = preg_match("#[\d]#", $pass);        // Au moins un chiffre
@@ -39,15 +54,10 @@ class AddUserAction extends Action {
         // Si la méthode utilisée est de type GET
         if ($this->http_method == "GET") {
             // On renvoie le formulaire
-            $res = '
+            $res = "
                     <h1>Créer un compte</h1>
-                    <form method="post" action="?action=add-user">
-                        <input type="email" name="email" placeholder="Email" class="input-field" required autofocus>
-                        <input type="password" name="passwd1" placeholder="Mot de passe" class="input-field" required>
-                        <input type="password" name="passwd2" placeholder="Confirmez le mot de passe" class="input-field" required>
-                        <input type="submit" name="connex" value="Connexion" class="button">
-                    </form>
-                    ';
+                    $this->formulaire
+                    ";
         }
         // Sinon
         else {
@@ -61,25 +71,29 @@ class AddUserAction extends Action {
 
             // Si les deux mots de passe sont identiques
             if ($p1 === $p2) {
-
+                // Si le mot de passe est trop faible
                 if(!$this->checkPasswordStrength($p1, 8)){
-                    return "<p>Mot de passe trop faible</p>";
-                } else {
+                    return $res = "
+                        <h1>Créer un compte</h1>
+                        <h3> Erreur : mot de passe trop faible ! </h3>
+                        <br>
+                        $this->formulaire
+                        ";
+                }
+                // Sinon
+                else {
                 // On enregistre le nouveau compte / utilisateur dans la BDD
                 $res = "<p>" . Auth::register($e, $p1) . "</p>";}
             }
             // Sinon
             else {
                 // On réaffiche le formulaire
-                $res = '
+                $res = "
                         <h1>Créer un compte</h1>
-                        <form method="post" action="?action=add-user">
-                            <input type="email" name="email" placeholder="Email" class="input-field" required autofocus>
-                            <input type="password" name="passwd1" placeholder="Mot de passe" class="input-field" required>
-                            <input type="password" name="passwd2" placeholder="Confirmez le mot de passe" class="input-field" required>
-                            <input type="submit" name="connex" value="Connexion" class="button">
-                        </form>
-                        ';
+                        <h3> Erreur : mot de passe différents ! </h3>
+                        <br>
+                        $this->formulaire
+                        ";
             }
         }
         // On retourne le résultat

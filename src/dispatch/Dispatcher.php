@@ -81,7 +81,7 @@ class Dispatcher {
             // On affiche l'email du compte auquel il est connecté
             $compte = 'Connecté au compte : ' . $_SESSION['user']['email'];
             // On affiche le bouton de déconnexion
-            $btn_deco = "<button name='action' value='sign-out' class ='button'> Se déconnecter </button>";
+            $btn_deco = "<button name='action' value='sign-out' class ='button button-secondary'> Se déconnecter </button>";
             // On affiche pas le bouton de connexion
             $btn_co = "";
             // On affiche pas le bouton de création de compte

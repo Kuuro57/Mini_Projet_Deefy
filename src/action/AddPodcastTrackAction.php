@@ -37,13 +37,13 @@ class AddPodcastTrackAction extends Action {
                 // Afficher une formulaire d'ajout d'une track
                 return '
                     <form method="post" name="nom_track" action="?action=add-track" enctype="multipart/form-data">
-                        Nom de la piste : <input type="text" name="nom_track" placeholder="<nom>">
-                        Nom de l\'artiste : <input type="text" name="artiste" placeholder="<artiste>">
-                        Fichier Audio : <input type="file" name="fichier" placeholder="<fichier>">
-                        Nom de l\'album : <input type="text" name="nom_album" placeholder="<album>">
-                        Numero de la piste : <input type="text" name="numero" placeholder="<piste>">
+                        Nom de la piste : <input type="text" name="nom_track" placeholder="<nom>" class="input-field">
+                        Nom de l\'artiste : <input type="text" name="artiste" placeholder="<artiste>" class="input-field">
+                        Fichier Audio : <input type="file" name="fichier" placeholder="<fichier>" class="input-field">
+                        Nom de l\'album : <input type="text" name="nom_album" placeholder="<album>" class="input-field">
+                        Numero de la piste : <input type="text" name="numero" placeholder="<piste>" class="input-field">
 
-                        <button type="submit" name="valider"> Valider </button>
+                        <button type="submit" name="valider" class="button"> Valider </button>
                     </form>
                 ';
             }

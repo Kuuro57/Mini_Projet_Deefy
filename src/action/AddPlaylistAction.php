@@ -34,10 +34,10 @@ class AddPlaylistAction extends Action {
             return '
             <form method="post" name="nom" action="?action=add-playlist">
                 <label> Nom de la playlist : 
-                    <input type="text" name="nom" placeholder="<nom>">
+                    <input type="text" name="nom" placeholder="<nom>" class="input-field">
                 </label>
 
-                <button type="submit" name="valider"> Valider </button>
+                <button type="submit" name="valider" class="button"> Valider </button>
             </form>
             ';
 
