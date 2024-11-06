@@ -39,12 +39,15 @@ class AddUserAction extends Action {
         // Si la méthode utilisée est de type GET
         if ($this->http_method == "GET") {
             // On renvoie le formulaire
-            $res = '<form method="post" action="?action=add-user">
-                    <input type="email" name="email" placeholder="email" autofocus>
-                    <input type="text" name="passwd1" placeholder="password 1">
-                    <input type="text" name="passwd2" placeholder="password 2">
-                    <input type="submit" name="connex" value="Connexion">
-                    </form>';
+            $res = '
+                    <h1>Créer un compte</h1>
+                    <form method="post" action="?action=add-user">
+                        <input type="email" name="email" placeholder="Email" class="input-field" required autofocus>
+                        <input type="password" name="passwd1" placeholder="Mot de passe" class="input-field" required>
+                        <input type="password" name="passwd2" placeholder="Confirmez le mot de passe" class="input-field" required>
+                        <input type="submit" name="connex" value="Connexion" class="button">
+                    </form>
+                    ';
         }
         // Sinon
         else {
@@ -68,13 +71,15 @@ class AddUserAction extends Action {
             // Sinon
             else {
                 // On réaffiche le formulaire
-                $res = '<p>Mot de passe 1 et 2 différents</p>
-                <form method="post" action="?action=add-user">
-                <input type="email" name="email" placeholder="email" autofocus>
-                <input type="text" name="passwd1" placeholder="password 1">
-                <input type="text" name="passwd2" placeholder="password 2">
-                <input type="submit" name="connex" value="Connexion">
-                </form>';
+                $res = '
+                        <h1>Créer un compte</h1>
+                        <form method="post" action="?action=add-user">
+                            <input type="email" name="email" placeholder="Email" class="input-field" required autofocus>
+                            <input type="password" name="passwd1" placeholder="Mot de passe" class="input-field" required>
+                            <input type="password" name="passwd2" placeholder="Confirmez le mot de passe" class="input-field" required>
+                            <input type="submit" name="connex" value="Connexion" class="button">
+                        </form>
+                        ';
             }
         }
         // On retourne le résultat

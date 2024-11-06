@@ -81,7 +81,7 @@ class Dispatcher {
             // On affiche l'email du compte auquel il est connecté
             $compte = 'Connecté au compte : ' . $_SESSION['user']['email'];
             // On affiche le bouton de déconnexion
-            $btn_deco = "<button name='action' value='sign-out' class ='boutton'> signout </button>";
+            $btn_deco = "<button name='action' value='sign-out' class ='button'> Se déconnecter </button>";
             // On affiche pas le bouton de connexion
             $btn_co = "";
             // On affiche pas le bouton de création de compte
@@ -94,9 +94,9 @@ class Dispatcher {
             // On n'affiche pas le bouton de déconnexion
             $btn_deco = "";
             // On affiche le bouton de connexion
-            $btn_co = "<button name='action' value='sign-in' class='boutton'> signin </button>";
+            $btn_co = "<button name='action' value='sign-in' class='button button-secondary'> Connexion à un compte </button>";
             // On affiche le bouton de création de compte
-            $btn_crea_compte = "<button name='action' value='add-user' class ='boutton'> register </button>";
+            $btn_crea_compte = "<button name='action' value='add-user' class ='button button-secondary'> Créer un compte </button>";
         }
 
         // Si il y a une playlist en session
@@ -116,38 +116,42 @@ class Dispatcher {
         // On affiche la page HTML complète
         echo <<<END
 
+            <!DOCTYPE html>
             <html lang="fr">
-            
-                <form method="get">
-                    $btn_crea_compte
-                    <tr>
-                    $btn_co
-                    <tr>
-                    $btn_deco
-                </form>
-                
-                $compte
-                <br>
-                $playlist
-            
-                <center><h1> Deefy Music ! </h1></center>
-            
-            
-                <center><form method="get">
-                
-                    <button name='action' value='display-playlist'> Afficher la playlist </button>
-                    <button name='action' value='add-playlist'> Ajouter une playlist </button>
-                    <button name='action' value='add-track'> Ajouter une track à la playlist </button>
-                    <button name='action' value='display-all-playlists'> Mes playlists </button>
-                    
-                </form></center>
-
-                <br>
-                <br>
-
-                $html
-
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Deefy Music</title>
+                <link rel="stylesheet" href="css/style.css">
+            </head>
+            <body>
+                <div class="container">
+                    <h1> Deefy Music !</h1>
+                    <form method="get">
+                        $btn_crea_compte
+                        $btn_co
+                        $btn_deco
+                    </form>
+                    <div class="user-info">
+                        $compte
+                    </div>
+                    <div class="playlist-info">
+                        $playlist
+                    </div>
+                    <br>
+                    <form method="get">
+                        <button name="action" value="display-playlist" class="button">Afficher la playlist</button>
+                        <button name="action" value="add-playlist" class="button">Ajouter une playlist</button>
+                        <button name="action" value="add-track" class="button">Ajouter une track à la playlist</button>
+                        <button name="action" value="display-all-playlists" class="button">Mes playlists</button>
+                    </form>
+                </div>
+                <div class="container">
+                    $html
+                </div>
+            </body>
             </html>
+
 
         END;
 
