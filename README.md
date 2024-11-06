@@ -11,10 +11,10 @@
 
 ```ini
 driver='mysql'
-host='<nomhost>'
+host='localhost'
 database='<nomBD>'
-username='<username>'
-password='<mdp>'
+username='root'
+password=''
 ```
 
 - **Pour la BDD** vous avez 2 options :
