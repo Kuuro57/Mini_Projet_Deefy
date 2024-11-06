@@ -1,33 +1,50 @@
-# Mini_Projet_Deefy
-Mini projet Deefy - Dev Web - Allart Noah et Mangin Adrien
 
-Info :
-   - Avoir sur votre projet local un fichier conf.db.ini (option de connexion à la BDD)
+# Mini Projet Deefy - Developpement Web - S3
 
-de la forme :
+**Développeurs** : Allart Noah et Mangin Adrien
 
+---
+
+### Informations
+
+Pour exécuter le projet en local, créer un fichier `conf.db.ini` contenant les options de connexion à la base de données, avec la structure suivante :
+
+```ini
 driver='mysql'
-host='<hosy>'
+host='<nomhost>'
 database='<nomBD>'
 username='<username>'
 password='<mdp>'
+```
 
+---
 
-Les fonctionnalités suivantes sont accessibles dans le menu d’accueil de l’application :
+### Fonctionnalités
 
-• mes playlists : affiche la liste des playlists de l’utilisateur authentifié ; chaque élément de la
-liste est cliquable et permet d’afficher une playlist qui devient la playlist courante ; stockée
-en session.
-• créer une playlist vide : un formulaire permettant de saisir le nom d’une nouvelle playlist est
-affiché. A la validation, la playlist est créée et stockée en BD ; elle devient la playlist
-courante.
-• Afficher la playlist courante : affiche la playlist stockée en session.
-• S’inscrire : création d’un compte utilisateur avec le rôle STANDARD.
-• s’authentifier : fournir ses credentials pour s’authentifier en tant qu’utilisateur enregistré.
+Les fonctionnalités suivantes sont disponibles dans le menu d'accueil de l'application :
 
-• L’affichage d’une playlist et l’ajout d’une piste à une playlist est réservé au propriétaire de la
-playlist ou au rôle ADMIN (Le compte admin est déjà créé en BDD, email:admin@mail.com mdp:admin)
-• Sécurité : stockage adéquat des mot de passe.
-parades contre l’injection XSS et SQL.
-• Le code HTML généré est valide.
+- **Mes playlists** : Affiche la liste des playlists de l'utilisateur authentifié. Chaque playlist est cliquable et permet de la sélectionner, la rendant ainsi "courante" (stockée en session).
 
+- **Créer une playlist vide** : Permet de créer une nouvelle playlist via un formulaire où l'utilisateur saisit le nom de la playlist. Une fois validée, la playlist est enregistrée en BDD et devient la playlist courante.
+
+- **Afficher la playlist courante** : Affiche la playlist stockée en session.
+
+- **S’inscrire** : Permet de créer un compte utilisateur avec le rôle **STANDARD**.
+
+- **S’authentifier** : Permet à l'utilisateur de se connecter en fournissant ses identifiants.
+
+- **Affichage et gestion des playlists** :
+   - L'affichage et l'ajout de pistes à une playlist sont réservés au propriétaire de la playlist ou aux utilisateurs ayant le rôle **ADMIN**.
+   - **Compte admin préexistant** :
+      - **Email** : `admin@mail.com`
+      - **Mot de passe** : `admin`
+
+---
+
+### Sécurité
+
+- Stockage sécurisé des mots de passe.
+- Protection contre les injections XSS et SQL.
+- Code HTML valide
+
+---
