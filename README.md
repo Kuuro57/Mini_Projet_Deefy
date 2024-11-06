@@ -7,7 +7,7 @@
 
 ### Informations
 
-Pour exécuter le projet en local, créer un fichier `conf.db.ini` contenant les options de connexion à la base de données, avec la structure suivante :
+- Pour exécuter le projet en local, créer un fichier `conf.db.ini` contenant les options de connexion à la base de données, avec la structure suivante :
 
 ```ini
 driver='mysql'
@@ -16,6 +16,12 @@ database='<nomBD>'
 username='<username>'
 password='<mdp>'
 ```
+
+- **Pour la BDD** vous avez 2 options :
+   - Soit aller sur arche pour récupérer le fichier de création des tables de base.
+   - Soit récupérer le fichier présente dans le repository nommé `script_creation_tables.sql`
+
+- Nommer la BDD comme dans le fichier de configuration `<nomBD>` lors de la création de la BDD sur phpMyAdmin.
 
 ---
 
